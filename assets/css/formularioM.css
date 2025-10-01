@@ -1,0 +1,505 @@
+:root {
+  /* 🔵 Azules */
+  --azul-oscuro: #0A1931;
+  --azul-medio: #4A7FA7;
+  --azul-intermedio: #1A3D63;
+  --azul-claro: #B3CFE5;
+
+  /* 🟢 Verdes */
+  --verde-medio: #1b7f4d;
+  --verde-intermedio: #145C44;
+
+  /* ⚪ Neutros */
+  --blanco: #ffffff;
+  --blanco-azulado: #F6FAFD;
+
+  /* 🌗 Sombras */
+  --sombra-azul: rgba(0, 98, 255, 0.25);
+  --sombra-hover: rgba(11, 130, 190, 0.356);
+  --imagenFondo: url(../img/fondoRegistro1.png);
+}
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; 
+  padding: 30px 0;       
+  min-height: 100vh;
+  background: var(--blanco-azulado);
+  background-size: cover;
+  background-position: center;
+}
+
+a{
+  color: var(--azul-intermedio);
+  text-decoration: none;
+}
+.icono-usuario{
+  width:  94px;   
+  height: 94px;  
+  object-fit: contain;      
+  image-rendering: crisp-edges; 
+}
+/* Wrapper */
+.wrapper{
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--blanco);
+  border: 2px solid var(--verde-fuerte);
+  backdrop-filter: blur(9px);
+  color: var(--negro);
+  border-radius: 15px;
+  padding: 30px 40px;
+  box-shadow: 0 4px 12px var(--sombra-hover);
+}
+.wrapper h1{
+  font-size: 36px;
+  text-align: center;
+}
+
+/* Inputs */
+.wrapper .input-box{
+  position: relative;
+  width: 100%;
+  height: 50px;
+  margin: 30px 0;
+}
+.input-box input{
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: 2px solid var(--azul-claro);
+  border-radius: 10px;
+  font-size: 16px;
+  color: var(--negro);
+  padding: 20px 45px 20px 20px;
+}
+.input-box input::placeholder{
+  color: #fff;
+}
+.input-box i{
+  position: absolute;
+  right: 20px;
+  top: 30%;
+  transform: translate(-50%);
+  font-size: 20px;
+}
+
+/* Recordar y enlace */
+.wrapper .remember-forgot{
+  display: flex;
+  justify-content: space-between;
+  font-size: 14.5px;
+  margin: -15px 0 15px;
+}
+.remember-forgot label input{
+  accent-color: #fff;
+  margin-right: 3px;
+}
+.remember-forgot a{
+  color: #fff;
+  text-decoration: none;
+}
+.remember-forgot a:hover{
+  text-decoration: underline;
+}
+
+/* Botón */
+.wrapper .btn{
+  width: 100%;
+  height: 45px;
+  background: var(--azul-medio);
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--blanco);
+  transition: 0.5s;
+}
+
+/* Select */
+.input-box select {
+  width: 100%;
+  height: 50px;
+  background: #fff;
+  border: 2px solid var(--azul-claro);
+  border-radius: 10px;
+  font-size: 16px;
+  color: black;
+  padding: 10px 20px;
+  appearance: none; 
+}
+
+/* Número de teléfono */
+.numero{
+  border: 2px solid rgba(255, 255, 255, .2);
+  border-radius:10px;
+  width: 100%;
+  height: 50px;
+  display: flex;
+}
+#lada{
+  width: 30%;
+  border-radius: 10px 0 0 10px;
+  background: transparent;
+  border: 2px solid var(--azul-claro);
+}
+#telefono{
+  width: 70%;  
+  border-radius: 0 10px 10px 0;
+  background: transparent;
+  border: 2px solid var(--azul-claro);
+}
+
+/* Modal */
+.modal, .overlay {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+
+  /* centrado */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: auto;
+  padding: 30px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 0 15px #000;
+}
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  margin-top: -10px;
+  cursor: pointer;
+}
+.close:hover, .close:focus {
+  color: black;
+  text-decoration: none;
+}
+.btn:hover{
+  background: var(--verde-medio);
+  color: var(--blanco);
+  transform: scale(1.03);
+}
+.btn a{
+  color: var(--blanco)!important;
+  text-decoration: none!important;
+}
+/* Estados de validación */
+.valid {border: 2px solid green;}
+.invalid {border: 2px solid red;}
+.error-msg {color: red; font-size: 12px;}
+
+
+
+/* ---------------------- */
+/* Estilos del Anuncio Bv */
+/* ---------------------- */
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  z-index: 99999; /* super alto */
+}
+
+/* contenedor del anuncio */
+.AnuncioPalmira {
+  position: relative;
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  max-width: 400px;
+  text-align: center;
+  animation: aparecer 0.5s ease;
+  z-index: 9999; 
+}
+.AnuncioPalmira img {
+  height: 650px;
+  width: 400px;
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+/* botón de cerrar */
+.tache {
+  position: absolute;
+  background: rgb(0, 191, 255);
+  border-radius: 50%;
+  top: 8px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #000000;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* animación */
+@keyframes aparecer {
+  from {transform: scale(0.7); opacity: 0;}
+  to {transform: scale(1); opacity: 1;}
+}
+
+/* mostrar anuncio */
+.overlay.mostrar {
+  visibility: visible;
+  display: flex;
+}
+/* Estilos para el campo "Otro medio" */
+.otro-wrapper {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: 0.8s ease;
+    margin-top: 0;
+}
+
+.otro-wrapper.active {
+    max-height:100%; /* suficiente para un input */
+    opacity: 1;
+}
+#otro_medio{
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: 2px solid var(--azul-claro);
+  border-radius: 10px;
+  font-size: 16px;
+  color: var(--negro);
+  padding: 20px 45px 20px 20px;
+}
+body.modificar-usuario #telefono {
+  width: 100% !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+  border: 2px solid var(--azul-claro) !important;
+}
+/* ================= Responsividad Mejorada ================= */
+
+/* Móviles muy pequeños (max-width: 480px) */
+@media (max-width: 480px) {
+  body {
+    padding: 10px 5px;
+    align-items: center;
+  }
+
+  .wrapper {
+    width: 95%;
+    padding: 15px 20px;
+    border-radius: 12px;
+  }
+
+  .wrapper h1 {
+    font-size: 22px;
+  }
+
+  .input-box input, .input-box select, #lada, #telefono, #otro_medio {
+    font-size: 12px;
+    height: 40px;
+    padding: 10px 15px;
+  }
+
+  .btn {
+    font-size: 14px;
+    height: 40px;
+  }
+
+  .icono-usuario {
+    width: 70px;
+    height: 70px;
+  }
+
+  .numero {
+    flex-direction: column;
+  }
+
+  .AnuncioPalmira img {
+    height: auto;
+    max-height: 400px;
+    width: 100%;
+  }
+
+  .tache {
+    width: 25px;
+    height: 25px;
+    font-size: 18px;
+  }
+}
+
+/* Tablets pequeñas (max-width: 768px) */
+@media (max-width: 768px) {
+  body {
+    padding: 15px 10px;
+    align-items: center;
+  }
+
+  .wrapper {
+    width: 80%;
+    padding: 20px 25px;
+  }
+
+  .wrapper h1 {
+    font-size: 28px;
+  }
+
+  .input-box input, .input-box select, #lada, #telefono, #otro_medio {
+    font-size: 14px;
+    height: 45px;
+  }
+
+  .btn {
+    font-size: 15px;
+    height: 45px;
+  }
+
+  .icono-usuario {
+    width: 85px;
+    height: 85px;
+  }
+
+  .numero {
+    flex-direction: row;
+  }
+
+  .AnuncioPalmira img {
+    height: auto;
+    max-height: 500px;
+    width: 100%;
+  }
+
+  .tache {
+    width: 28px;
+    height: 28px;
+    font-size: 20px;
+  }
+}
+
+/* Laptops medianas (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .wrapper {
+    width: 60%;
+    padding: 25px 30px;
+  }
+
+  .wrapper h1 {
+    font-size: 32px;
+  }
+
+  .input-box input, .input-box select, #lada, #telefono, #otro_medio {
+    font-size: 15px;
+    height: 50px;
+  }
+
+  .btn {
+    font-size: 16px;
+    height: 45px;
+  }
+
+  .icono-usuario {
+    width: 90px;
+    height: 90px;
+  }
+
+  .AnuncioPalmira img {
+    max-height: 600px;
+    width: 100%;
+  }
+
+  .tache {
+    width: 30px;
+    height: 30px;
+    font-size: 22px;
+  }
+}
+
+/* Escritorio grande / Monitores grandes (min-width: 1440px) */
+@media (min-width: 1440px) {
+  .wrapper {
+    width: 40%;
+    padding: 30px 40px;
+  }
+
+  .wrapper h1 {
+    font-size: 36px;
+  }
+
+  .input-box input, .input-box select, #lada, #telefono, #otro_medio {
+    font-size: 16px;
+    height: 50px;
+  }
+
+  .btn {
+    font-size: 16px;
+    height: 45px;
+  }
+
+  .icono-usuario {
+    width: 94px;
+    height: 94px;
+  }
+
+  .AnuncioPalmira img {
+    height: 650px;
+    width: 400px;
+  }
+
+  .tache {
+    width: 30px;
+    height: 30px;
+    font-size: 22px;
+  }
+}
+
+/* ================= Ajustes generales para que nada se corte ================= */
+.wrapper, .modal-content, .AnuncioPalmira {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.input-box input, .input-box select, #lada, #telefono, #otro_medio, .btn {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+body {
+  flex-wrap: wrap;
+}
+
+.AnuncioPalmira img {
+  max-width: 100%;
+  height: auto;
+}
