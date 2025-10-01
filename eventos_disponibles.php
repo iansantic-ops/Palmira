@@ -36,13 +36,21 @@ if (isset($_POST['inscribir'])) {
     <link rel="stylesheet" href="./assets/css/todo.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
 </head>
+<style>
+    .iconoT1 {
+      width: 20px;   
+      height: 20px;  
+      object-fit: contain;      
+      image-rendering: crisp-edges; 
+    }
+  </style>
 <body>
 
 <div class="nav">
   <div class="container">
-    <div class="btn"><a href="eventos_disponibles.php">Eventos Disponibles</a></div>
-    <div class="btn"><a href="anuncios.php">Anuncios anteriores</a></div>
-    <div class="btn"><a href="perfil_usuario.php">Ir al perfil</a></div>
+    <div class="btn"><a href="eventos_disponibles.php">Eventos Disponibles <img src="./assets/img/eventos.png" alt="Icono PNG" class="iconoT1"></a></div>
+    <div class="btn"><a href="anuncios.php">Anuncios anteriores <img src="./assets/img/anuncio.png" alt="Icono PNG" class="iconoT1"></a></div>
+    <div class="btn"><a href="perfil_usuario.php">Ir al perfil <img src="./assets/img/usuario.png" alt="Icono PNG" class="iconoT1"></a></div>
 
     <svg
       class="outline"
@@ -88,7 +96,7 @@ if (isset($_POST['inscribir'])) {
                 <form action="eventos_disponibles.php" method="POST">
                     <input type="hidden" name="idE" value="<?= (int)$row['idE']; ?>">
                     <input type="hidden" name="idR" value="<?= (int)$_SESSION['idUsuario']; ?>" required>
-                    <button type="submit" name="inscribir">Inscribirme</button>
+                    <button type="submit" name="inscribir">Inscribirme <img src="./assets/img/editar.png" alt="Icono PNG" class="iconoT1"></button>
                 </form>
             </div>
         </div>

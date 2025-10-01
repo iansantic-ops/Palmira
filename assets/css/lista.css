@@ -1,0 +1,110 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 20px;
+  min-height: 100vh;
+  background: url(../img/fondoPalmira.png) no-repeat center center / cover;
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 1200px;
+  background: url(../img/fondoRegistro.png) no-repeat center center / cover;
+  border: 2px solid rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  color: #000;
+  border-radius: 12px;
+  padding: 30px 40px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Títulos */
+.wrapper h1,
+.wrapper h2,
+.titulo-tabla {
+  text-align: center;
+  color: #000;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* Tabla de usuarios */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+th, td {
+  padding: 14px 12px;
+  text-align: center;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+th {
+  background-color: #1db0ef;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+tr:nth-child(even) {
+  background-color: #f4faff;
+}
+
+tr:hover {
+  background-color: #e0f7ff;
+  transition: background-color 0.3s ease;
+}
+
+/* Lector QR Mejorado */
+.QR {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  margin-top: 50px;
+}
+#reader {
+  position: relative;
+  margin: 30px auto;
+  width: 320px;
+  height: 320px;
+  border: 3px solid #1db0ef;
+  border-radius: 15px;
+  padding: 0;
+  background: #ffffff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+#reader video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+#reader::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  border-radius: 15px;
+  z-index: 5;
+}
