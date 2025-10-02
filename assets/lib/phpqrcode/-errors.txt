@@ -20638,6 +20638,7 @@
 <b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\palmira_proyecto\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
 <br />
 <b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\palmira_proyecto\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
+<<<<<<< HEAD
 2025-10-02 03:49:28: <br />
 <b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
 <br />
@@ -22895,6 +22896,104 @@
 <br />
 <b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
 2025-10-02 04:51:04: <br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
+=======
+>>>>>>> 4b1df51527eb90e3c27f5f4a6556b6bdec09fef0
+2025-10-03 02:19:48: <br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
+2025-10-03 02:20:06: <br />
 <b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
 <br />
 <b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
