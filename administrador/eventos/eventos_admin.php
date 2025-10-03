@@ -26,64 +26,68 @@ $listaEventos = $eventos->leerEventos();
     <title>Eventos</title>
     <link rel="stylesheet" href="../../assets/css/admin.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background: #f4f6f9;
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-        .card {
-            background: #fff;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
-        }
-        .card:hover {
-            transform: scale(1.02);
-        }
-        .card h2 {
-            margin: 0 0 10px;
-            color: #333;
-        }
-        .card p {
-            margin: 5px 0;
-            color: #555;
-        }
-        .btn {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 8px 12px;
-            background: #007BFF;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: background 0.3s;
-        }
-        .btn:hover {
-            background: #0056b3;
-        }
-        .panel-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            padding: 8px 12px;
-            background: #28a745;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-        }
-        .panel-link:hover {
-            background: #1e7e34;
-        }
+        
+.container {
+  display: flex;
+  flex-wrap: wrap; 
+  justify-content: center;  
+  gap: 20px; 
+  padding: 20px;
+}
+
+/* Tarjetas individuales */
+.card {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 20px;
+  width: 300px; /* puedes ajustar el ancho */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.headerCardEventos {
+  display: flex;
+  justify-content: center; /* centra los botones horizontalmente */
+  align-items: center;
+  gap: 20px; /* espacio entre los botones */
+  margin-bottom: 10px;
+}
+
+
+.headerCardEventos button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.headerCardEventos button:hover {
+  transform: scale(1.1);
+}
+.icono-AM {
+  width: 24px;
+  height: 24px;
+}
+
+/* Botón inferior de información */
+.btn {
+  display: inline-block;
+  background-color: #4A7FA7; 
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: 0.3s;
+  margin-top: 15px;
+}
+
+.btn:hover {
+  background-color: #1b7f4d; 
+}
+
     </style>
 </head>
 <body>
@@ -91,7 +95,7 @@ $listaEventos = $eventos->leerEventos();
      <a href="../menu_admin.php"><button>Volver al menu</button></a>
     <h1>Lista de Eventos</h1>
     <a href="../perfil_admin.php"><button>Perfil</button></a>
-    <a href="crear_evento.php"><button>+</button></a>
+    <a href="crear_evento.php"><button><img src="../../assets/img/subir evento.png" alt="Icono PNG" class="icono-AM"></button></a>
     </header>
 
     <div class="container">
@@ -99,21 +103,21 @@ $listaEventos = $eventos->leerEventos();
             <?php foreach ($listaEventos as $evento): ?>
                 <div class="card">
                     <div class="headerCardEventos">
-                        <a href="editar_evento.php?idE=<?= $evento['idE']; ?>"><button>✏️</button></a>
+                        <a href="editar_evento.php?idE=<?= $evento['idE']; ?>"><button><img src="../../assets/img/lapiz.png" alt="Icono PNG" class="icono-AM"></button></a>
                         
                         <!-- Botón eliminar con confirmación -->
                         <form method="POST" style="display:inline;" 
                               onsubmit="return confirm('¿Estás seguro de eliminar este evento?');">
                             <input type="hidden" name="idE" value="<?= $evento['idE']; ?>">
-                            <button type="submit" name="eliminar">🗑️</button>
+                            <button type="submit" name="eliminar"><img src="../../assets/img/basura.png" alt="Icono PNG" class="icono-AM"></button>
                         </form>
                     </div>
 
                     <h2><?= htmlspecialchars($evento['nombre'], ENT_QUOTES, 'UTF-8'); ?></h2>
-                    <p><strong>Fecha:</strong> <?= htmlspecialchars($evento['fecha'], ENT_QUOTES, 'UTF-8'); ?></p>
-                    <p><strong>Hora:</strong> <?= htmlspecialchars($evento['hora'], ENT_QUOTES, 'UTF-8'); ?></p>
-                    <p><strong>Lugar:</strong> <?= htmlspecialchars($evento['lugar'], ENT_QUOTES, 'UTF-8'); ?></p>
-                    <a class="btn" href="inscritos.php?idE=<?= $evento['idE']; ?>">Info</a>
+                    <p><strong><img src="../../assets/img/calendario.png" alt="Icono PNG" class="icono-AM"> Fecha:</strong> <?= htmlspecialchars($evento['fecha'], ENT_QUOTES, 'UTF-8'); ?></p>
+                    <p><strong><img src="../../assets/img/reloj.png" alt="Icono PNG" class="icono-AM"> Hora:</strong> <?= htmlspecialchars($evento['hora'], ENT_QUOTES, 'UTF-8'); ?></p>
+                    <p><strong><img src="../../assets/img/marcador.png" alt="Icono PNG" class="icono-AM"> Lugar:</strong> <?= htmlspecialchars($evento['lugar'], ENT_QUOTES, 'UTF-8'); ?></p>
+                    <a class="btn" href="inscritos.php?idE=<?= $evento['idE']; ?>">Informacion del evento</a>
                 </div>
             <?php endforeach; ?>
         <?php else: ?>

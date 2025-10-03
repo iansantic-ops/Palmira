@@ -239,6 +239,14 @@ main p {
     font-size: 14px;
   }
 }
+.contenedor-botones {
+  display: grid;
+  grid-template-columns: repeat(2, auto); /* dos columnas */
+  gap: 15px; /* espacio entre botones */
+  justify-content: center; /* centra las columnas */
+}
+
+
 
 
         
