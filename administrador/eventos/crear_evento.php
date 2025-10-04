@@ -36,6 +36,7 @@ if (isset($_POST['crear'])) {
     <meta charset="UTF-8">
     <title>Crear Evento</title>
     <script src="../../assets/js/validacion_evento.js"></script>
+    <link rel="stylesheet" href="../../assets/css/eventos.css">
 
 </head>
 <style>
@@ -50,10 +51,14 @@ input.invalid, textarea.invalid {
 }
 </style>
 <body>
-     <button class="regresar" onclick="window.history.back()">   
+    <header>
+        <h2>Crear Evento</h2>
+        <button class="regresar" onclick="window.history.back()">   
             <span>Volver</span>
         </button>
-    <h2>Crear Evento</h2>
+    </header>
+     
+    
    <form id="formEvento" action="crear_evento.php" method="POST">
     <label>Nombre del evento:</label>
     <input type="text" id="nombre_evento" name="nombre_evento" required>
