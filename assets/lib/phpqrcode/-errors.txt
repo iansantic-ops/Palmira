@@ -23044,6 +23044,7 @@
 <b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
 =======
 >>>>>>> 27786558549c15aa4ab2ee0718f0c5a050be9910
+<<<<<<< HEAD
 2025-10-04 19:10:31: <br />
 <b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>71</b><br />
 <br />
@@ -23236,3 +23237,5 @@
 <b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>53</b><br />
 <br />
 <b>Warning</b>:  Trying to access array offset on value of type int in <b>C:\xampp\htdocs\Palmira\assets\lib\phpqrcode\qrsplit.php</b> on line <b>62</b><br />
+=======
+>>>>>>> 9369f0265c8f33d00e1d1421c8aaf30e29dc2c3c
