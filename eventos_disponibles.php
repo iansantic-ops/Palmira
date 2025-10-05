@@ -94,6 +94,12 @@ if (isset($_POST['inscribir'])) {
         </div>
     <?php endforeach; ?>
 </div>
+<div class="apps">
+    <a href="https://wa.me/+525551721475"><button class=redes id=whatsapp>Whatsapp</button></a>
+    <a href="https://www.facebook.com/Universidad.Palmira"><button class=redes id=facebook>Facebook</button></a>
+    <a href="https://www.instagram.com/comunidad.palmira/?igshid=z4ifdpudkidw"><button class=redes id=instagram>Instagram</button></a>
+    <a href="mailto:vinculacion@cupalmira.edu.mx"><button>Correo</button></a>
+</div>
 
 
     <script>
