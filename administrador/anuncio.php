@@ -33,7 +33,7 @@ if (isset($_POST['subir']) && isset($_FILES["imagen"])) {
             $sql = "UPDATE configuracion SET imagen_anuncio = :imagen WHERE id = 1";
             $stmt = $pdo->prepare($sql);
             if ($stmt->execute([':imagen' => $rutaBD])) {
-                echo "<p style='color:green;'> Imagen subida y guardada correctamente.</p>";
+                echo "<p style='color:lightgreen; text-align:center;'>✅ Imagen subida y guardada correctamente.</p>";
                 $imagenActual = '../' . $rutaBD;
 
                 // Guardar en historial
@@ -41,13 +41,13 @@ if (isset($_POST['subir']) && isset($_FILES["imagen"])) {
                 $stmtHist = $pdo->prepare($sqlHist);
                 $stmtHist->execute([':imagen' => $rutaBD]);
             } else {
-                echo "<p style='color:red;'> No se pudo guardar la imagen.</p>";
+                echo "<p style='color:red; text-align:center;'>❌ No se pudo guardar la imagen.</p>";
             }
         } else {
-            echo "<p style='color:red;'> No se pudo mover el archivo. Revisa permisos.</p>";
+            echo "<p style='color:red; text-align:center;'>⚠️ No se pudo mover el archivo. Revisa permisos.</p>";
         }
     } catch (Exception $e) {
-        echo "<p style='color:red;'> Error: " . $e->getMessage() . "</p>";
+        echo "<p style='color:red; text-align:center;'> Error: " . $e->getMessage() . "</p>";
     }
 }
 ?>
@@ -57,29 +57,27 @@ if (isset($_POST['subir']) && isset($_FILES["imagen"])) {
 <head>
     <meta charset="UTF-8">
     <title>Cambiar Anuncio</title>
-    <style>
-        .preview { margin: 20px 0; }
-        .preview img { max-width: 300px; max-height: 300px; border: 2px solid #ccc; border-radius: 10px; }
-    </style>
+    <link rel="stylesheet" href="../assets/css/anuncio.css">
+    
 </head>
 <body>
-     <button class="regresar" onclick="window.history.back()">   
-            <span>Volver</span>
-        </button>
-    <h1>Panel Administrador</h1>
-    <h2>Imagen de Anuncio Actual</h2>
+    <header>
+        <h2>Cambiar Anuncio</h2>
+        <a href="menu_admin.php"><button>Volver</button></a>
+    </header>
 
-    <div class="preview">
-        <img src="<?php echo $imagenActual; ?>" alt="Anuncio actual">
-    </div>
+    <main>
+        <h2>Anuncio Actual:</h2>
+        <br>
+        <div class="preview">
+            <img src="<?php echo $imagenActual; ?>" alt="Anuncio actual">
+        </div>
 
-    <form method="POST" enctype="multipart/form-data">
-        <label>Subir nueva imagen:</label><br><br>
-        <input type="file" name="imagen" accept="image/*" required>
-        <br><br>
-        <button type="submit" name="subir">Actualizar Anuncio</button>
-    </form>
-    
+        <form method="POST" enctype="multipart/form-data">
+            <label>Subir nueva imagen:</label>
+            <input type="file" name="imagen" accept="image/*" required>
+            <button type="submit" name="subir">Actualizar Anuncio</button>
+        </form>
+    </main>
 </body>
 </html>
-
