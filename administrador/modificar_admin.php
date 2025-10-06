@@ -39,7 +39,7 @@ if ($idSeleccionado) {
 <head>
     <meta charset="UTF-8">
     <title>Modificar Administrador</title>
-    <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="stylesheet" href="../assets/css/eventos.css">
     <style>
         body { font-family: Arial; margin: 20px; background: #f4f6f9; }
         h1 { text-align: center; }
@@ -58,8 +58,13 @@ if ($idSeleccionado) {
     </style>
 </head>
 <body>
-    <button class="regresar" onclick="window.history.back()">Volver</button>
-    <h1>Modificar Administrador</h1>
+    <header>
+        <h2>Modificar Administrador</h2>
+        <button class="regresar" onclick="window.history.back()">Volver</button>
+
+    </header>
+    <main>
+    
 
     <?php if ($mensaje): ?>
         <p class="mensaje"><?= $mensaje ?></p>

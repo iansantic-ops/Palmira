@@ -24,14 +24,22 @@ try {
     <style>
         .historial { display: flex; gap: 15px; flex-wrap: wrap; }
         .historial img { max-width: 150px; border: 1px solid #ccc; border-radius: 5px; }
+        
+    .iconoT1 {
+      width: 20px;   
+      height: 20px;  
+      object-fit: contain;      
+      image-rendering: crisp-edges; 
+    }
+  
     </style>
 </head>
 <body>
     <div class="nav">
   <div class="container">
-    <div class="btn"><a href="eventos_disponibles.php">Eventos Disponibles</a></div>
-    <div class="btn"><a href="anuncios.php">Anuncios anteriores</a></div>
-    <div class="btn"><a href="perfil_usuario.php">Ir al perfil</a></div>
+    <div class="btn"><a href="eventos_disponibles.php">Eventos Disponibles <img src="./assets/img/eventos.png" alt="Icono PNG" class="iconoT1"></a></div>
+    <div class="btn"><a href="anuncios.php">Anuncios anteriores <img src="./assets/img/anuncio.png" alt="Icono PNG" class="iconoT1"></a></div>
+    <div class="btn"><a href="perfil_usuario.php">Ir al perfil <img src="./assets/img/usuario.png" alt="Icono PNG" class="iconoT1"></a></div>
 
     <svg
       class="outline"

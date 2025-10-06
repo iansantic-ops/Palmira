@@ -33,7 +33,8 @@ if (isset($_POST['iniciar'])&& !empty($_POST['usuario']) && !empty($_POST['contr
 <body>
     <div class="wrapper">
         <form action="" method="post">
-            <h1>Iniciar sesión</h1>
+            <center> <img src="../assets/img/administrador.png" alt="Icono PNG" class="icono-usuario"> </center>
+            
 <br>
             <?php if (!empty($error)): ?>
                 <p style="color:red; text-align:center;"><?= $error ?></p>

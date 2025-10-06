@@ -16,6 +16,14 @@ if (!isset($_SESSION['idAdmin'])) {
     <title>Panel de Administración</title>
     <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
+<style>
+    .icono-A {
+      width: 27px;   
+      height: 27px;  
+      object-fit: contain;      
+      image-rendering: crisp-edges; 
+    }
+  </style>
 <body>
     <header>
         <h2>Panel de Administración</h2>
@@ -26,15 +34,16 @@ if (!isset($_SESSION['idAdmin'])) {
 
     </header>
 <main>
-<h1>Panel de Administración</h1>
-<p>👤 Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario']); ?></p>
 
-<a href="eventos/eventos_admin.php" class="boton">Eventos</a>
-<a href="anuncio.php" class="boton">Anuncio</a>
-<a href="asistencia/QR.php" class="boton" >Marcar asistencias por evento</a>
-<a href="usuarios/usuarios_registrados.php" class="boton" >usuarios en plataforma</a>
-<br><br>
-<a href="logout.php" class="boton">Cerrar sesión</a>
+<p>Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario']); ?></p>
+
+<div class="contenedor-botones">
+  <a href="eventos/eventos_admin.php" class="boton">Eventosㅤ<img src="../assets/img/eventos.png" alt="Icono PNG" class="icono-A"></a>
+  <a href="anuncio.php" class="boton">Anuncio ㅤ<img src="../assets/img/anuncio.png" alt="Icono PNG" class="icono-A"></a>
+  <a href="asistencia/QR.php" class="boton">Marcar asistencias por evento <img src="../assets/img/asistencia.png" alt="Icono PNG" class="icono-A"></a>
+  <a href="usuarios/usuarios_registrados.php" class="boton">Usuarios en plataforma<img src="../assets/img/usuarios.png" alt="Icono PNG" class="icono-A"></a>
+</div>
+
 </main>
 </body>
 </html>

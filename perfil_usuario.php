@@ -38,6 +38,15 @@ if(isset($_POST['eliminar']) && isset($_POST['idE'])) {
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <style>
+    .iconoT1 {
+      width: 20px;   
+      height: 20px;  
+      object-fit: contain;      
+      image-rendering: crisp-edges; 
+    }
+  </style>
+
     <meta charset="UTF-8">
     <title>Mi Perfil</title>
     <link rel="stylesheet" href="./assets/css/todo.css">
@@ -46,9 +55,9 @@ if(isset($_POST['eliminar']) && isset($_POST['idE'])) {
 <body>
     <div class="nav">
   <div class="container">
-    <div class="btn"><a href="eventos_disponibles.php">Eventos Disponibles</a></div>
-    <div class="btn"><a href="anuncios.php">Anuncios anteriores</a></div>
-    <div class="btn"><a href="perfil_usuario.php">Ir al perfil</a></div>
+    <div class="btn"><a href="eventos_disponibles.php">Eventos Disponibles <img src="./assets/img/eventos.png" alt="Icono PNG" class="iconoT1"></a></div>
+    <div class="btn"><a href="anuncios.php">Anuncios anteriores <img src="./assets/img/anuncio.png" alt="Icono PNG" class="iconoT1"></a></div>
+    <div class="btn"><a href="perfil_usuario.php">Ir al perfil <img src="./assets/img/usuario.png" alt="Icono PNG" class="iconoT1"></a></div>
 
     <svg
       class="outline"
@@ -75,10 +84,10 @@ if(isset($_POST['eliminar']) && isset($_POST['idE'])) {
     <h1 style="text-align:center;">Bienvenido, <?= htmlspecialchars($usuario['nombre'], ENT_QUOTES, 'UTF-8'); ?></h1>
     <div class="botones-usuario">
         <a href="modificar_usuario.php">
-            <button>Modificar mis datos <div class="imagenes_botones"><img class="imagenes_acciones"src="assets/img/editar.png" alt="Icon"></div></button>
+            <button>Modificar mis datos <img src="./assets/img/lapiz-de-usuario.png" alt="Icono PNG" class="iconoT1"></button>
         </a>
         <form action="assets/php/cerrar_sesion.php" method="post">
-            <button type="submit" class="btn-cerrar">Cerrar Sesión <div class="imagenes_botones"><img class="imagenes_acciones"src="assets/img/cierre-de-sesion-de-usuario.png" alt="Icon"></button>
+            <button type="submit" class="btn-cerrar">Cerrar Sesión <img src="./assets/img/cierre-de-sesion-de-usuario.png" alt="Icono PNG" class="iconoT1"></button>
         </form>
     </div>
 </header>
@@ -90,8 +99,8 @@ if(isset($_POST['eliminar']) && isset($_POST['idE'])) {
 
     <!-- Botón para descargar el QR -->
     <a href="<?= $qrDataUri ?>" download="QR_Usuario_<?= htmlspecialchars($usuario['nombre'], ENT_QUOTES, 'UTF-8'); ?>.png">
-        <button type="button">Descargar QR<div class="imagenes_botones"><img class="imagenes_acciones"src="assets/img/descargar.png" alt="Icon"></button>
-    </a>
+        <button type="button">Descargar QR <img src="./assets/img/descargar.png" alt="Icono PNG" class="iconoT1"></button>
+        </a>
 </div>
 
 <br>
@@ -118,7 +127,7 @@ if(isset($_POST['eliminar']) && isset($_POST['idE'])) {
         <button type="submit" name="eliminar" class="btn-accion"
             onclick="return confirm('¿Estás seguro de que deseas eliminar la asistencia a este evento?');">
             Anular asistencia
-            <div class="imagenes_botones"><img class="imagenes_acciones"src="assets/img/borrar-usuario.png" alt="Icon">
+            <img src="./assets/img/borrar-usuario.png" alt="Icono PNG" class="iconoT1">
         </button>
     </form></td>
             </tr>

@@ -53,6 +53,7 @@ if (isset($_POST['actualizar'])) {
 <head>
     <meta charset="UTF-8">
     <title>Editar Evento</title>
+    <link rel="stylesheet" href="../../assets/css/eventos.css">
     <script src="../../assets/js/validacion_evento.js"></script>
 </head>
 <style>
@@ -67,11 +68,13 @@ input.invalid, textarea.invalid {
 }
 </style>
 <body>
-     <button class="regresar" onclick="window.history.back()">   
+    <header>
+     
+    <h2>Editar Evento</h2>
+    <button class="regresar" onclick="window.history.back()">   
             <span>Volver</span>
         </button>
-    <h2>Editar Evento</h2>
-
+</header>
     <?php if ($mensaje): ?>
         <p style="color:<?= strpos($mensaje,'')!==false ? 'green' : 'red' ?>;"><?= $mensaje ?></p>
     <?php endif; ?>
