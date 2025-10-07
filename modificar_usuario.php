@@ -36,6 +36,7 @@ $paisSeleccionado = $usuario['pais'];
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>Modificar Usuario</title>
     <link rel="stylesheet" href="./assets/css/formularioM.css">
     <script src="assets/js/validacion.js"></script>

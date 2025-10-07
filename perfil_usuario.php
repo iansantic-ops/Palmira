@@ -45,6 +45,7 @@ if(isset($_POST['eliminar']) && isset($_POST['idE'])) {
       object-fit: contain;      
       image-rendering: crisp-edges; 
     }
+    
   </style>
 
     <meta charset="UTF-8">
@@ -99,49 +100,58 @@ if(isset($_POST['eliminar']) && isset($_POST['idE'])) {
 
     <!-- Botón para descargar el QR -->
     <a href="<?= $qrDataUri ?>" download="QR_Usuario_<?= htmlspecialchars($usuario['nombre'], ENT_QUOTES, 'UTF-8'); ?>.png">
-        <button type="button">Descargar QR <img src="./assets/img/descargar.png" alt="Icono PNG" class="iconoT1"></button>
+        <button type="button">Descargar QR </button>
         </a>
 </div>
 
 <br>
     <h2>Eventos a los que te has registrado:</h2>
-    <div class="EventosUS"> 
-        <?php if(!empty($eventosInscritos)): ?>
-        <table class="tabla-eventos">
+<div class="EventosUS"> 
+    <?php if(!empty($eventosInscritos)): ?>
+    <table class="tabla-eventos">
+        <thead>
             <tr>
                 <th>Nombre</th>
                 <th>Fecha</th>
                 <th>Hora</th>
                 <th>Lugar</th>
-                <th></th>
+                <th>Acción</th>
             </tr>
-
+        </thead>
+        <tbody>
             <?php foreach ($eventosInscritos as $evento): ?>
-                <tr>
-    <td> <?= htmlspecialchars($evento['nombre'], ENT_QUOTES, 'UTF-8'); ?></td>
-    <td>  <?= htmlspecialchars($evento['fecha'], ENT_QUOTES, 'UTF-8'); ?></td>
-    <td>  <?= htmlspecialchars($evento['hora'], ENT_QUOTES, 'UTF-8'); ?></td>
-    <td>  <?= htmlspecialchars($evento['lugar'], ENT_QUOTES, 'UTF-8'); ?></td>
-    <td><form action="perfil_usuario.php" method="post" style="display:inline;">
-        <input type="hidden" name="idE" value="<?= htmlspecialchars($evento['idE'], ENT_QUOTES, 'UTF-8'); ?>">
-        <button type="submit" id="eliminar_asistencia" name="eliminar" class="btn-accion"
-            onclick="return confirm('¿Estás seguro de que deseas eliminar la asistencia a este evento?');">
-            Anular asistencia
-            <img src="./assets/img/borrar-usuario.png" alt="Icono PNG" class="iconoT1">
-        </button>
-        <button type="submit" id="eliminar_asistencia_tel" name="eliminar" class="btn-accion"
-            onclick="return confirm('¿Estás seguro de que deseas eliminar la asistencia a este evento?');">
-            <img src="./assets/img/borrar-usuario.png" alt="Icono PNG" class="iconoT1">
-        </button>
-    </form></td>
-            </tr>
+            <tr>
+                <td data-label="Nombre"><?= htmlspecialchars($evento['nombre'], ENT_QUOTES, 'UTF-8'); ?></td>
+                <td data-label="Fecha"><?= htmlspecialchars($evento['fecha'], ENT_QUOTES, 'UTF-8'); ?></td>
+                <td data-label="Hora"><?= htmlspecialchars($evento['hora'], ENT_QUOTES, 'UTF-8'); ?></td>
+                <td data-label="Lugar"><?= htmlspecialchars($evento['lugar'], ENT_QUOTES, 'UTF-8'); ?></td>
+                <td data-label="Acción">
+                    <form action="perfil_usuario.php" method="post" style="display:inline;">
+                        <input type="hidden" name="idE" value="<?= htmlspecialchars($evento['idE'], ENT_QUOTES, 'UTF-8'); ?>">
 
+                        <!-- Botón para pantallas grandes -->
+                        <button type="submit" id="eliminar_asistencia" name="eliminar" class="btn-accion"
+                            onclick="return confirm('¿Estás seguro de que deseas eliminar la asistencia a este evento?');">
+                            Anular asistencia
+                            <img src="./assets/img/borrar-usuario.png" alt="Icono PNG" class="iconoT1">
+                        </button>
+
+                        <!-- Botón alternativo para móviles -->
+                        <button type="submit" id="eliminar_asistencia_tel" name="eliminar" class="btn-accion"
+                            onclick="return confirm('¿Estás seguro de que deseas eliminar la asistencia a este evento?');">
+                            <img src="./assets/img/borrar-usuario.png" alt="Icono PNG" class="iconoT1">
+                        </button>
+                    </form>
+                </td>
+            </tr>
             <?php endforeach; ?>
-            </table>
+        </tbody>
+    </table>
     <?php else: ?>
         <p>No te has inscrito a ningún evento aún.</p>
     <?php endif; ?>
 </div>
+
    <br><br>
     
 
