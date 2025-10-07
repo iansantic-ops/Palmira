@@ -103,10 +103,14 @@ if (isset($_POST['inscribir'])) {
     <?php endforeach; ?>
 </div>
 <div class="apps">
-    <a href="https://wa.me/+525551721475"><button class=redes id=whatsapp>Whatsapp</button></a>
-    <a href="https://www.facebook.com/Universidad.Palmira"><button class=redes id=facebook>Facebook</button></a>
-    <a href="https://www.instagram.com/comunidad.palmira/?igshid=z4ifdpudkidw"><button class=redes id=instagram>Instagram</button></a>
-    <a href="mailto:vinculacion@cupalmira.edu.mx"><button>Correo</button></a>
+  <div class="btn-principal">
+    <img src="assets/img/mensajes.png"  class="iconoT1" alt="Redes">
+  </div>
+  <div class="redes">
+    <a href="https://wa.me/+525551721475" id="whatsapp"><img src="assets/img/whatsapp.png"  class="iconoT1" alt="Whatsapp"></a>
+    <a href="https://www.facebook.com/Universidad.Palmira" id="facebook"><img src="assets/img/facebook.png"  class="iconoT1" alt="facebook"></a>
+    <a href="https://www.instagram.com/comunidad.palmira/?igshid=z4ifdpudkidw" id="instagram"><img src="assets/img/instagram.png" class="iconoT1" alt="instagram"></a>
+  </div>
 </div>
 
 

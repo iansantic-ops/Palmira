@@ -81,6 +81,33 @@ try {
     }
     ?>
 </div>
+<div id="overlay">
+        <span class="cerrar">&times;</span>
+        <img src="" alt="Imagen Grande">
+    </div>
 
+    <script>
+        const overlay = document.getElementById('overlay');
+        const overlayImg = overlay.querySelector('img');
+        const cerrar = overlay.querySelector('.cerrar');
+
+        document.querySelectorAll('.historial-item img').forEach(img => {
+            img.addEventListener('click', () => {
+                overlay.style.display = 'flex';
+                overlayImg.src = img.src;
+            });
+        });
+
+        cerrar.addEventListener('click', () => {
+            overlay.style.display = 'none';
+        });
+
+        // Cerrar al hacer clic fuera de la imagen
+        overlay.addEventListener('click', (e) => {
+            if(e.target === overlay) {
+                overlay.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>

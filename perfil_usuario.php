@@ -124,9 +124,13 @@ if(isset($_POST['eliminar']) && isset($_POST['idE'])) {
     <td>  <?= htmlspecialchars($evento['lugar'], ENT_QUOTES, 'UTF-8'); ?></td>
     <td><form action="perfil_usuario.php" method="post" style="display:inline;">
         <input type="hidden" name="idE" value="<?= htmlspecialchars($evento['idE'], ENT_QUOTES, 'UTF-8'); ?>">
-        <button type="submit" name="eliminar" class="btn-accion"
+        <button type="submit" id="eliminar_asistencia" name="eliminar" class="btn-accion"
             onclick="return confirm('¿Estás seguro de que deseas eliminar la asistencia a este evento?');">
             Anular asistencia
+            <img src="./assets/img/borrar-usuario.png" alt="Icono PNG" class="iconoT1">
+        </button>
+        <button type="submit" id="eliminar_asistencia_tel" name="eliminar" class="btn-accion"
+            onclick="return confirm('¿Estás seguro de que deseas eliminar la asistencia a este evento?');">
             <img src="./assets/img/borrar-usuario.png" alt="Icono PNG" class="iconoT1">
         </button>
     </form></td>

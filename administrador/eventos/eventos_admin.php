@@ -23,6 +23,7 @@ $listaEventos = $eventos->leerEventos();
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eventos</title>
     <link rel="stylesheet" href="../../assets/css/admin.css">
     <style>

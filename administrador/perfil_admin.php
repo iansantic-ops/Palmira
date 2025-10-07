@@ -16,6 +16,7 @@ if (isset($_SESSION['idAdmin'])) {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil de Administrador</title>
     <link rel="stylesheet" href="../assets/css/perfiladmin.css">
 </head>

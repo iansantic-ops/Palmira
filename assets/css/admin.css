@@ -195,7 +195,12 @@ main p {
     height: 20px;
     object-fit: cover;
 }
-
+.contenedor-botones {
+  display: grid;
+  grid-template-columns: repeat(2, auto); /* dos columnas */
+  gap: 15px; /* espacio entre botones */
+  justify-content: center; /* centra las columnas */
+}
 
 /* ================= RESPONSIVE ================= */
 @media (max-width: 768px) {
@@ -203,6 +208,12 @@ main p {
     flex-direction: column;
     gap: 12px;
     text-align: center;
+  }
+  main{
+    display: flex;
+    flex-direction: column;
+    padding: 30px 10px;
+    gap: 20px;
   }
 
   main h1 {
@@ -225,6 +236,13 @@ main p {
     font-size: 12px;
     padding: 6px 12px;
   }
+  main{
+    display: flex;
+    flex-direction: column;
+    padding: 20px 5px;
+    gap: 15px;
+
+  }
 
   main h1 {
     font-size: 22px;
@@ -239,12 +257,7 @@ main p {
     font-size: 14px;
   }
 }
-.contenedor-botones {
-  display: grid;
-  grid-template-columns: repeat(2, auto); /* dos columnas */
-  gap: 15px; /* espacio entre botones */
-  justify-content: center; /* centra las columnas */
-}
+
 
 
 

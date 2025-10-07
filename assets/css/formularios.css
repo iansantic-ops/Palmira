@@ -306,197 +306,194 @@ body.modificar-usuario #telefono {
   border: 2px solid var(--azul-claro) !important;
 }
 /* ================= Responsividad Mejorada ================= */
+/* 📱 RESPONSIVIDAD */
 
-/* Móviles muy pequeños (max-width: 480px) */
-@media (max-width: 480px) {
-  body {
-    padding: 10px 5px;
-    align-items: center;
-  }
-
+/* Tablets y pantallas medianas */
+@media (max-width: 1024px) {
   .wrapper {
-    width: 95%;
-    padding: 15px 20px;
-    border-radius: 12px;
+    width: 60%;
+    padding: 25px 35px;
   }
 
   .wrapper h1 {
-    font-size: 22px;
+    font-size: 30px;
   }
 
-  .input-box input, .input-box select, #lada, #telefono, #otro_medio {
-    font-size: 12px;
-    height: 40px;
-    padding: 10px 15px;
-  }
-
-  .btn {
-    font-size: 14px;
-    height: 40px;
-  }
-
-  .icono-usuario {
-    width: 70px;
-    height: 70px;
-  }
-
-  .numero {
-    flex-direction: column;
-  }
-
-  .AnuncioPalmira img {
-    height: auto;
-    max-height: 400px;
-    width: 100%;
-  }
-
-  .tache {
-    width: 25px;
-    height: 25px;
-    font-size: 18px;
+  .input-box input,
+  .input-box select {
+    font-size: 15px;
   }
 }
 
-/* Tablets pequeñas (max-width: 768px) */
+/* Celulares grandes (pantallas tipo iPhone Plus, Galaxy S series) */
 @media (max-width: 768px) {
   body {
-    padding: 15px 10px;
-    align-items: center;
+    align-items: flex-start;
+    padding: 20px;
+    background-size: cover;
   }
 
   .wrapper {
     width: 80%;
-    padding: 20px 25px;
+    padding: 25px 25px;
   }
 
   .wrapper h1 {
     font-size: 28px;
   }
 
-  .input-box input, .input-box select, #lada, #telefono, #otro_medio {
-    font-size: 14px;
-    height: 45px;
-  }
-
-  .btn {
-    font-size: 15px;
-    height: 45px;
-  }
-
-  .icono-usuario {
-    width: 85px;
-    height: 85px;
+  .wrapper h2 {
+    font-size: 20px;
   }
 
   .numero {
-    flex-direction: row;
-  }
-
-  .AnuncioPalmira img {
+    flex-direction: column;
     height: auto;
-    max-height: 500px;
+  }
+
+  #lada, 
+  #telefono {
     width: 100%;
+    border-radius: 10px;
+    margin-bottom: 10px;
   }
 
-  .tache {
-    width: 28px;
-    height: 28px;
-    font-size: 20px;
-  }
-}
-
-/* Laptops medianas (max-width: 1024px) */
-@media (max-width: 1024px) {
-  .wrapper {
-    width: 60%;
-    padding: 25px 30px;
-  }
-
-  .wrapper h1 {
-    font-size: 32px;
-  }
-
-  .input-box input, .input-box select, #lada, #telefono, #otro_medio {
+  .btn {
     font-size: 15px;
-    height: 50px;
-  }
-
-  .btn {
-    font-size: 16px;
-    height: 45px;
-  }
-
-  .icono-usuario {
-    width: 90px;
-    height: 90px;
-  }
-
-  .AnuncioPalmira img {
-    max-height: 600px;
-    width: 100%;
-  }
-
-  .tache {
-    width: 30px;
-    height: 30px;
-    font-size: 22px;
+    height: 42px;
   }
 }
 
-/* Escritorio grande / Monitores grandes (min-width: 1440px) */
-@media (min-width: 1440px) {
+/* Celulares pequeños (480px o menos) */
+@media (max-width: 480px) {
+  body {
+    padding: 15px;
+    background-position: center;
+  }
+
   .wrapper {
-    width: 40%;
-    padding: 30px 40px;
+    position:absolute;
+    width: 95%;
+    padding: 20px;
+    border-radius: 10px;
+    top: 40px;
   }
 
   .wrapper h1 {
-    font-size: 36px;
+    font-size: 24px;
   }
 
-  .input-box input, .input-box select, #lada, #telefono, #otro_medio {
-    font-size: 16px;
-    height: 50px;
+  .wrapper h2 {
+    font-size: 18px;
+  }
+
+  label {
+    font-size: 14px;
+  }
+
+  input,
+  select {
+    font-size: 14px;
+  }
+
+  .numero {
+    flex-direction: column;
+    gap: 10px;
   }
 
   .btn {
-    font-size: 16px;
-    height: 45px;
+    font-size: 14px;
+    padding: 10px;
   }
 
-  .icono-usuario {
-    width: 94px;
-    height: 94px;
+  p {
+    font-size: 13px;
+    text-align: center;
+  }
+}
+
+/* Muy pequeños (350px o menos, celulares compactos) */
+@media (max-width: 350px) {
+  .wrapper {
+    position:absolute;
+    width: 100%;
+    padding: 15px;
+   top:20px;
   }
 
-  .AnuncioPalmira img {
-    height: 650px;
-    width: 400px;
-  }
-
-  .tache {
-    width: 30px;
-    height: 30px;
+  .wrapper h1 {
     font-size: 22px;
   }
+
+  .wrapper h2 {
+    font-size: 16px;
+  }
+
+  input,
+  select {
+    font-size: 13px;
+  }
+
+  .btn {
+    font-size: 13px;
+  }
+}
+/* 📱 Ajuste especial para campo de número en celulares */
+@media (max-width: 768px) {
+  .numero {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .numero label {
+    font-size: 15px;
+    text-align: left;
+  }
+
+  /* Selector de lada */
+  #lada {
+    width: 100%;
+    border-radius: 10px 10px 0 0;
+    font-size: 15px;
+    height: 45px;
+    border: 1px solid var(--azul-medio);
+    outline: none;
+    background-color: var(--azul-claro);
+  }
+
+  /* Input del número */
+  #telefono {
+    width: 100%;
+    border-radius: 0 0 10px 10px;
+    font-size: 15px;
+    height: 45px;
+    border: 1px solid var(--azul-medio);
+    border-top: none;
+    outline: none;
+    background-color: #fff;
+  }
+
+  /* Eliminamos flechitas de los inputs numéricos (en móviles y escritorio) */
+  #telefono::-webkit-inner-spin-button,
+  #telefono::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
 }
 
-/* ================= Ajustes generales para que nada se corte ================= */
-.wrapper, .modal-content, .AnuncioPalmira {
-  max-width: 100%;
-  box-sizing: border-box;
-}
+/* Extra para celulares pequeños */
+@media (max-width: 480px) {
+  .numero label {
+    font-size: 14px;
+  }
 
-.input-box input, .input-box select, #lada, #telefono, #otro_medio, .btn {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-body {
-  flex-wrap: wrap;
-}
-
-.AnuncioPalmira img {
-  max-width: 100%;
-  height: auto;
+  #lada, #telefono {
+    height: 40px;
+    font-size: 14px;
+  }
 }
