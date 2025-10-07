@@ -51,16 +51,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
     <link rel="stylesheet" href="../../assets/css/inscritos.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        /* 🎨 Estilos para la barra de búsqueda */
+        .search-bar {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .search-bar input {
+            width: 300px;
+            max-width: 90%;
+            padding: 8px 14px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            border-color: #4A7FA7;
+            outline: none;
+            box-shadow: 0 0 5px rgba(74, 127, 167, 0.5);
+        }
+
+        /* 💻 Responsive */
+        @media (max-width: 600px) {
+            .search-bar {
+                justify-content: center;
+            }
+            .search-bar input {
+                width: 100%;
+            }
+        }
+
+        /* 🧾 Mejoras visuales tabla */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: #0A1931;
+            color: white;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background: #f5f5f5;
+        }
+
         .evento-info button {
             background: none;
             border: none;
             cursor: pointer;
             transition: transform 0.2s ease;
         }
+
         .icono-EM {
             width: 24px;
             height: 24px;
         }
+
         .icono-Estrella {
             width: 22px;
             height: 22px;
@@ -105,9 +163,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
     <!-- TAB: ASISTENTES -->
     <div id="asistentes" class="tab-content active">
         <h2>Lista de Asistentes</h2>
+        <div class="search-bar">
+            <input type="text" id="busquedaAsistentes" placeholder="Buscar asistente...">
+        </div>
         <div class="table-container">
             <?php if (!empty($asistentes)): ?>
-                <table>
+                <table id="tablaAsistentes">
                     <thead>
                         <tr>
                             <th>ID Registro</th>
@@ -123,11 +184,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
                             $telefonoCompleto = $usuario['lada'] . ' ' . $usuario['telefono'];
                         ?>
                         <tr>
-                            <td data-label="ID Registro"><?= htmlspecialchars($usuario['idR'], ENT_QUOTES, 'UTF-8'); ?></td>
-                            <td data-label="Nombre"><?= $nombreCompleto ?></td>
-                            <td data-label="Teléfono"><?= $telefonoCompleto ?></td>
-                            <td data-label="Correo"><?= htmlspecialchars($usuario['correo'], ENT_QUOTES, 'UTF-8'); ?></td>
-                            <td data-label="Fecha y hora"><?= htmlspecialchars($usuario['fecha_asistencia'], ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td><?= htmlspecialchars($usuario['idR']); ?></td>
+                            <td><?= htmlspecialchars($nombreCompleto); ?></td>
+                            <td><?= htmlspecialchars($telefonoCompleto); ?></td>
+                            <td><?= htmlspecialchars($usuario['correo']); ?></td>
+                            <td><?= htmlspecialchars($usuario['fecha_asistencia']); ?></td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -141,9 +202,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
     <!-- TAB: INSCRIPCIONES -->
     <div id="inscripciones" class="tab-content">
         <h2>Inscripciones</h2>
+        <div class="search-bar">
+            <input type="text" id="busquedaInscritos" placeholder="Buscar inscrito...">
+        </div>
         <div class="table-container">
             <?php if (!empty($inscritos)): ?>
-                <table>
+                <table id="tablaInscritos">
                     <thead>
                         <tr>
                             <th>ID Registro</th>
@@ -158,10 +222,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
                             $telefonoCompleto = $usuario['lada'] . ' ' . $usuario['telefono'];
                         ?>
                         <tr>
-                            <td data-label="ID Registro"><?= htmlspecialchars($usuario['idR'], ENT_QUOTES, 'UTF-8'); ?></td>
-                            <td data-label="Nombre"><?= $nombreCompleto ?></td>
-                            <td data-label="Teléfono"><?= $telefonoCompleto ?></td>
-                            <td data-label="Correo"><?= htmlspecialchars($usuario['correo'], ENT_QUOTES, 'UTF-8'); ?></td>
+                            <td><?= htmlspecialchars($usuario['idR']); ?></td>
+                            <td><?= htmlspecialchars($nombreCompleto); ?></td>
+                            <td><?= htmlspecialchars($telefonoCompleto); ?></td>
+                            <td><?= htmlspecialchars($usuario['correo']); ?></td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -175,15 +239,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
     <!-- TAB: ESTADÍSTICAS -->
     <div id="estadisticas" class="tab-content">
         <h2>Estadísticas del evento</h2>
-        <br>    
         <p><strong>Total inscritos:</strong> <?= $totalInscritos ?></p>
         <p><strong>Total asistentes:</strong> <?= $totalAsistentes ?></p>
         <p><strong>Porcentaje de asistencia:</strong> <?= $porcentaje ?>%</p>
-
         <div class="grafica">
             <canvas id="grafica"></canvas>
         </div>
-
         <script>
             const ctx = document.getElementById('grafica');
             new Chart(ctx, {
@@ -201,18 +262,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
 </main>
 
 <script>
-    // cambiar entre pestañas
+    // 🔄 Cambiar pestañas
     document.querySelectorAll(".tab-link").forEach(button => {
         button.addEventListener("click", () => {
             const tab = button.dataset.tab;
-
             document.querySelectorAll(".tab-link").forEach(btn => btn.classList.remove("active"));
             button.classList.add("active");
-
             document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
             document.getElementById(tab).classList.add("active");
         });
     });
+
+    // 🔍 Filtro de búsqueda
+    function filtrarTabla(inputId, tablaId) {
+        const input = document.getElementById(inputId);
+        const tabla = document.getElementById(tablaId);
+        input.addEventListener("keyup", () => {
+            const filtro = input.value.toLowerCase();
+            const filas = tabla.getElementsByTagName("tr");
+            for (let i = 1; i < filas.length; i++) {
+                const texto = filas[i].textContent.toLowerCase();
+                filas[i].style.display = texto.includes(filtro) ? "" : "none";
+            }
+        });
+    }
+
+    filtrarTabla("busquedaAsistentes", "tablaAsistentes");
+    filtrarTabla("busquedaInscritos", "tablaInscritos");
 </script>
 
 </body>
