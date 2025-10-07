@@ -22,6 +22,8 @@ if (isset($_POST['eliminar']) && isset($_POST['idR'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Usuarios en plataforma</title>
+    <link rel="stylesheet" href="../../assets/css/usuarios.css">
+
 </head>
 <body>
     <header>
@@ -45,13 +47,14 @@ if (isset($_POST['eliminar']) && isset($_POST['idR'])) {
             <tbody>
                 <?php foreach ($result as $usuario): ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($usuario['idR'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($usuario['nombre'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($usuario['correo'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($usuario['telefono'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($usuario['medioE'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($usuario['origen'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($usuario['pais'], ENT_QUOTES, 'UTF-8'); ?></td>   
+                    <td data-label="ID"><?php echo htmlspecialchars($usuario['idR']); ?></td>
+                    <td data-label="Nombre"><?php echo htmlspecialchars($usuario['nombre']); ?></td>
+                    <td data-label="Correo"><?php echo htmlspecialchars($usuario['correo']); ?></td>
+                    <td data-label="Teléfono"><?php echo htmlspecialchars($usuario['telefono']); ?></td>
+                    <td data-label="Medio"><?php echo htmlspecialchars($usuario['medioE']); ?></td>
+                    <td data-label="Origen"><?php echo htmlspecialchars($usuario['origen']); ?></td>
+                    <td data-label="País"><?php echo htmlspecialchars($usuario['pais']); ?></td>
+   
                     <td>
                         <form method="POST" action="usuarios_registrados.php" onsubmit="return confirm('¿Estás seguro de eliminar este usuario?');">
                             <input type="hidden" name="idR" value="<?php echo htmlspecialchars($usuario['idR'], ENT_QUOTES, 'UTF-8'); ?>">

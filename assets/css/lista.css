@@ -1,110 +1,232 @@
+:root {
+  /* 🎨 Paleta institucional */
+  --azul-oscuro: #0A1931;
+  --azul-intermedio: #1A3D63;
+  --azul-medio: #4A7FA7;
+  --azul-claro: #B3CFE5;
+
+  --verde-oscuro: #0B3D2E;
+  --verde-medio: #1b7f4d;
+  --verde-claro: #A9D6C6;
+
+  --blanco: #FFFFFF;
+  --blanco-azulado: #F6FAFD;
+
+  --gris-sombra: rgba(0, 98, 255, 0.25);
+  --gris-hover: rgba(11, 130, 190, 0.35);
+
+  --transicion: all 0.3s ease;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 body {
+  background: var(--blanco-azulado);
+  color: var(--azul-oscuro);
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  padding: 30px 20px;
   min-height: 100vh;
-  background: url(../img/fondoPalmira.png) no-repeat center center / cover;
+  padding: 2rem 1rem;
 }
 
-.wrapper {
-  width: 100%;
-  max-width: 1200px;
-  background: url(../img/fondoRegistro.png) no-repeat center center / cover;
-  border: 2px solid rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
-  color: #000;
-  border-radius: 12px;
-  padding: 30px 40px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-}
-
-/* Títulos */
-.wrapper h1,
-.wrapper h2,
-.titulo-tabla {
+/* Título principal */
+h2 {
   text-align: center;
-  color: #000;
-  margin-bottom: 20px;
-  font-weight: bold;
+  color: var(--azul-oscuro);
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.5px;
 }
 
-/* Tabla de usuarios */
-table {
+/* Botón de regresar */
+.regresar {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.2rem;
+  background: var(--azul-medio);
+  color: var(--blanco);
+  border: none;
+  padding: 0.7rem 1.4rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px var(--gris-sombra);
+  transition: var(--transicion);
+}
+
+.regresar:hover {
+  background: var(--verde-medio);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px var(--gris-hover);
+}
+
+/* Selector de eventos */
+select {
   width: 100%;
-  border-collapse: collapse;
-  background: rgba(255, 255, 255, 0.88);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  max-width: 450px;
+  padding: 0.8rem;
+  border-radius: 10px;
+  border: 2px solid var(--azul-medio);
+  font-size: 1rem;
+  background: var(--blanco);
+  color: var(--azul-oscuro);
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px var(--gris-sombra);
+  transition: var(--transicion);
 }
 
-th, td {
-  padding: 14px 12px;
-  text-align: center;
-  border: 1px solid #ccc;
-  font-size: 15px;
+select:focus {
+  outline: none;
+  border-color: var(--verde-medio);
+  box-shadow: 0 0 8px rgba(27, 127, 77, 0.4);
 }
 
-th {
-  background-color: #1db0ef;
-  color: white;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-tr:nth-child(even) {
-  background-color: #f4faff;
-}
-
-tr:hover {
-  background-color: #e0f7ff;
-  transition: background-color 0.3s ease;
-}
-
-/* Lector QR Mejorado */
+/* Contenedor QR */
 .QR {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-content: center;
-  margin-top: 50px;
+  max-width: 520px;
+  background: var(--blanco);
+  border-radius: 14px;
+  box-shadow: 0 6px 18px var(--gris-sombra);
+  padding: 2rem;
+  text-align: center;
+  transition: var(--transicion);
 }
+
+.QR:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px var(--gris-hover);
+}
+
+/* Lector QR */
 #reader {
-  position: relative;
-  margin: 30px auto;
-  width: 320px;
-  height: 320px;
-  border: 3px solid #1db0ef;
-  border-radius: 15px;
-  padding: 0;
-  background: #ffffff;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  margin: 0 auto;
+  border-radius: 10px;
   overflow: hidden;
+  box-shadow: 0 4px 12px var(--gris-sombra);
 }
 
-#reader video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 15px;
+/* Resultado de lectura */
+#result {
+  margin-top: 1.2rem;
+  font-size: 1.1rem;
+  color: var(--azul-intermedio);
+  background: var(--azul-claro);
+  padding: 0.8rem;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px var(--gris-sombra);
+  word-wrap: break-word;
 }
 
-#reader::after {
-  position: absolute;
-  top: 0;
-  left: 0;
+/* Input manual */
+input[type="text"] {
   width: 100%;
-  height: 100%;
-  pointer-events: none;
-  border-radius: 15px;
-  z-index: 5;
+  max-width: 350px;
+  padding: 0.8rem;
+  border: 2px solid var(--azul-intermedio);
+  border-radius: 10px;
+  margin-top: 1rem;
+  margin-bottom: 0.8rem;
+  font-size: 1rem;
+  color: var(--azul-oscuro);
+  text-align: center;
+  transition: var(--transicion);
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: var(--verde-medio);
+  box-shadow: 0 0 10px rgba(27, 127, 77, 0.4);
+}
+
+/* Botón marcar asistencia */
+button {
+  background: var(--azul-medio);
+  color: var(--blanco);
+  border: none;
+  padding: 0.8rem 1.4rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: var(--transicion);
+  box-shadow: 0 4px 12px var(--gris-sombra);
+}
+
+button:hover {
+  background: var(--verde-medio);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--gris-hover);
+}
+
+/* 📱 Responsividad */
+@media (max-width: 768px) {
+  body {
+    padding: 1.5rem 1rem;
+  }
+
+  h2 {
+    font-size: 1.6rem;
+  }
+
+  .QR {
+    padding: 1.5rem;
+  }
+
+  select {
+    font-size: 0.95rem;
+  }
+
+  input[type="text"] {
+    font-size: 0.95rem;
+  }
+
+  button {
+    font-size: 0.95rem;
+    padding: 0.7rem 1.2rem;
+  }
+
+  .regresar {
+    top: 1rem;
+    left: 1rem;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h2 {
+    font-size: 1.3rem;
+    margin-top: 3.5rem;
+  }
+
+  .QR {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  select,
+  input[type="text"] {
+    max-width: 100%;
+  }
+
+  #result {
+    font-size: 1rem;
+  }
+
+  button {
+    width: 100%;
+    max-width: 260px;
+  }
+
+  #reader {
+    width: 100%;
+    min-height: 250px;
+  }
 }

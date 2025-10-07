@@ -1,0 +1,191 @@
+/* -----------------------------
+   ESTILO PROFESIONAL RESPONSIVO
+   PARA "usuarios_registrados.php"
+------------------------------ */
+
+:root {
+  --azul-oscuro: #0A1931;
+  --azul-intermedio: #1A3D63;
+  --azul-medio: #4A7FA7;
+  --azul-claro: #B3CFE5;
+  --gris-claro: #f4f6f9;
+  --gris-oscuro: #555;
+  --blanco: #ffffff;
+  --rojo: #e74c3c;
+  --verde: #27ae60;
+  --sombra: rgba(0, 0, 0, 0.1);
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--gris-claro);
+  margin: 0;
+  padding: 0;
+  color: var(--azul-oscuro);
+}
+
+/* ---------- HEADER ---------- */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--azul-oscuro);
+  color: var(--blanco);
+  padding: 15px 30px;
+  box-shadow: 0 2px 8px var(--sombra);
+}
+
+header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+header a button {
+  background: var(--azul-medio);
+  color: var(--blanco);
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+header a button:hover {
+  background: var(--azul-intermedio);
+  transform: translateY(-2px);
+}
+
+/* ---------- TABLA ---------- */
+main {
+  padding: 30px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--blanco);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px var(--sombra);
+}
+
+thead {
+  background-color: var(--azul-medio);
+  color: var(--blanco);
+  text-align: left;
+}
+
+thead th {
+  padding: 14px 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+tbody td {
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
+  color: var(--gris-oscuro);
+  font-size: 0.9rem;
+}
+
+/* Efecto hover en filas */
+tbody tr:hover {
+  background-color: var(--azul-claro);
+  color: var(--azul-oscuro);
+  transition: 0.2s;
+}
+
+/* ---------- BOTONES ---------- */
+button[name="eliminar"],
+button[name="modificar"] {
+  display: inline-block;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--blanco);
+  transition: all 0.3s ease;
+}
+
+/* Botón eliminar */
+button[name="eliminar"] {
+  background-color: var(--rojo);
+}
+
+button[name="eliminar"]:hover {
+  background-color: #c0392b;
+}
+
+/* Botón modificar */
+button[name="modificar"] {
+  background-color: var(--verde);
+}
+
+button[name="modificar"]:hover {
+  background-color: #1e8449;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 1024px) {
+  table {
+    font-size: 0.85rem;
+  }
+
+  header h2 {
+    font-size: 1.3rem;
+  }
+
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  header a button {
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  main {
+    padding: 15px;
+  }
+
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tr {
+    margin-bottom: 12px;
+    background: var(--blanco);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px var(--sombra);
+    padding: 10px;
+  }
+
+  td {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border: none;
+  }
+
+  td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--azul-intermedio);
+  }
+}
