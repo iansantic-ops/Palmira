@@ -13,6 +13,7 @@ if (!isset($_SESSION['idAdmin'])) {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración</title>
     <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
@@ -42,6 +43,7 @@ if (!isset($_SESSION['idAdmin'])) {
   <a href="anuncio.php" class="boton">Anuncio ㅤ<img src="../assets/img/anuncio.png" alt="Icono PNG" class="icono-A"></a>
   <a href="asistencia/QR.php" class="boton">Marcar asistencias por evento <img src="../assets/img/asistencia.png" alt="Icono PNG" class="icono-A"></a>
   <a href="usuarios/usuarios_registrados.php" class="boton">Usuarios en plataforma<img src="../assets/img/usuarios.png" alt="Icono PNG" class="icono-A"></a>
+  <a href="logout.php" class="boton">Cerrar sesión<img src="../assets/img/cierre-de-sesion-de-usuario.png" alt="Icono PNG" class="icono-A"></a>
 </div>
 
 </main>

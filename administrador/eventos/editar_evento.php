@@ -39,8 +39,8 @@ if (isset($_POST['actualizar'])) {
     $actualizado = $eventosObj->actualizarEvento($idEvento, $nombre_evento, $descripcion, $fecha, $hora, $lugar, $aforo_max);
 
     if ($actualizado === true) {
-        $mensaje = "Evento actualizado correctamente.";
-        // refrescar datos
+         echo "<script>alert('Evento editado exitosamente'); window.location='eventos_admin.php';</script>";
+        exit();
         $evento = $eventosObj->leerEventoPorId($idEvento);
     } else {
         $mensaje = "Error al actualizar el evento. Intenta de nuevo.";
@@ -52,6 +52,7 @@ if (isset($_POST['actualizar'])) {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Evento</title>
     <link rel="stylesheet" href="../../assets/css/eventos.css">
     <script src="../../assets/js/validacion_evento.js"></script>

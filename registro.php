@@ -111,12 +111,12 @@ HTML;
 
         <div class="input-box">
             <label for="nombre">Nombre(s):</label>
-            <input type="text" name="nombre" id="nombre" value="<?= isset($nombre) ? $nombre : '' ?>" required>
+            <input type="text" name="nombre" class="formulario_input" id="nombre" value="<?= isset($nombre) ? $nombre : '' ?>" required>
         </div>
 
         <div class="input-box">
             <label for="apellidos">Apellidos:</label>
-            <input type="text" name="apellidos" id="apellidos" value="<?= isset($apellidos) ? $apellidos : '' ?>" required>
+            <input type="text" name="apellidos" class="formulario_input" id="apellidos" value="<?= isset($apellidos) ? $apellidos : '' ?>" required>
         </div>
         
        
@@ -304,7 +304,7 @@ HTML;
     <option value="+248">+248 (Seychelles)</option>
     <option value="+290">+290 (Santa Elena)</option>
 </select>
-           <input type="number" name="telefono" id="telefono" value="<?= isset($telefono) ? $telefono : '' ?>" required>
+           <input type="number" name="telefono" class="formulario_input" id="telefono" value="<?= isset($telefono) ? $telefono : '' ?>" required>
        </div>
     
 </div>
@@ -312,7 +312,7 @@ HTML;
 
         <div class="input-box">
             <label for="correo">Correo electrónico:</label>
-            <input type="text" name="correo" id="correo" value="<?= isset($correo) ? $correo : '' ?>" required>
+            <input type="text" name="correo" class="formulario_input" id="correo" value="<?= isset($correo) ? $correo : '' ?>" required>
         </div>
 
         <div class="input-box">
@@ -349,7 +349,7 @@ HTML;
 
         <div class="input-box">
             <label for="origen">Institución de origen:</label>
-            <input type="text" name="origen" id="origen" value="<?= isset($origen) ? $origen : '' ?>" required>
+            <input type="text" name="origen" class="formulario_input" id="origen" value="<?= isset($origen) ? $origen : '' ?>" required>
         </div>
 
         <div class="input-box">
