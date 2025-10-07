@@ -1,100 +1,218 @@
 body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background: #F6FAFD;
-        }
-        h1, h2 {
-            text-align: center;
-        }
-        .evento-info {
-            text-align: center;
-            margin-bottom: 20px;
-            background: #fff;
-            padding: 15px;
-            border-radius: 26px;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-        }
-        .evento-info p{
-            color: #0A1931;
-        }
-        .table-container {
-            overflow-x: auto;
-            margin: 0 auto;
-            max-width: 1000px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            background: #F6FAFD;
-            border-radius: 10px;
-            overflow: hidden;
-            
-        }
-        th, td {
-            padding: 12px 15px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background: #4A7FA7;
-            color: white;
-        }
-        tr:hover {
-            background: #B3CFE5;  
-        }
-        .btn-back {
-            display: inline-block;
-            margin: 20px auto;
-            padding: 10px 15px;
-            background: #6c757d;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: background 0.3s;
-        }
-        .btn-back:hover {
-            background: #565e64;
-        }
-        /* Estilo del menú */
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background: #F6FAFD;
+}
+h1, h2 {
+    text-align: center;
+}
+.evento-info {
+    text-align: center;
+    margin-bottom: 20px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 26px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+.evento-info p {
+    color: #0A1931;
+}
+.table-container {
+    overflow-x: auto;
+    margin: 0 auto;
+    max-width: 1000px;
+    border-radius: 10px;
+}
+
+/* Tabla base */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: #F6FAFD;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 16px;
+}
+th, td {
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+th {
+    background: #4A7FA7;
+    color: white;
+}
+tr:hover {
+    background: #B3CFE5;
+}
+
+/* Botón regresar */
+.btn-back {
+    display: inline-block;
+    margin: 20px auto;
+    padding: 10px 15px;
+    background: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background 0.3s;
+}
+.btn-back:hover {
+    background: #565e64;
+}
+
+/* Menú de pestañas */
+.tab-menu {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.tab-menu button {
+    padding: 10px 20px;
+    border: none;
+    background: #B3CFE5;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: 0.3s;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.tab-menu button.active {
+    background: #4A7FA7;
+    color: white;
+}
+
+/* Contenido de cada pestaña */
+.tab-content {
+    display: none;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 26px;
+    background: #B3CFE5;
+}
+.tab-content.active {
+    display: block;
+}
+
+/* Gráfica */
+.grafica {
+        width: 100%;
+        height: auto;
+        max-width: 100%;
+    }
+
+
+
+/* 📱 Diseño Responsive general */
+@media (max-width: 768px) {
+    body {
+        margin: 10px;
+    }
+
+    h1, h2 {
+        font-size: 1.2rem;
+    }
+
+    .evento-info {
+        padding: 10px;
+    }
+
+    .evento-info p {
+        font-size: 0.9rem;
+    }
+
     .tab-menu {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
+        flex-direction: column;
+        align-items: stretch;
     }
 
     .tab-menu button {
-      padding: 10px 20px;
-      border: none;
-      background: #B3CFE5;  
-      cursor: pointer;
-      border-radius: 6px;
-      transition: 0.3s;
+        width: 100%;
+        justify-content: center;
+        font-size: 14px;
     }
 
-    .tab-menu button.active {
-      background: #4A7FA7;  
-      color: white;
-    }
-
-    /* Contenedores de cada sección */
-    .tab-content {
-      display: none;
-      padding: 15px;
-      border: 1px solid #ccc;
-      border-radius: 26px;
-      background: #B3CFE5; 
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-    /*grafica*/
     .grafica {
-        width: 400px;
-        height: 400px;
-        margin: 0 auto;
-        max-width: 400px;
-        max-height: 400px;
+        width: 100%;
+        height: auto;
+        max-width: 100%;
     }
-    
+}
+
+/* 🪄 Tablas como tarjetas en pantallas pequeñas */
+@media (max-width: 600px) {
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+        display: block;
+    }
+
+    thead {
+        display: none;
+    }
+
+    table {
+        background: none;
+    }
+
+    tbody tr {
+        margin-bottom: 15px;
+        background: #F6FAFD;
+        border-radius: 15px;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        padding: 10px;
+    }
+
+    td {
+        border: none;
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 10px;
+        text-align: left;
+        font-size: 14px;
+        border-bottom: 1px solid #0A1931; 
+    }
+
+    td:last-child {
+        border-bottom: none;
+    }
+
+    td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #0A1931;
+        flex-basis: 50%;
+        text-align: left;
+    }
+}
+
+/* 📱 Ajuste extra para pantallas muy pequeñas */
+@media (max-width: 400px) {
+    .evento-info h2 {
+        font-size: 1rem;
+    }
+
+    td {
+        font-size: 13px;
+    }
+
+    .tab-menu button {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .grafica {
+        width: 100%;
+        height: auto;
+    }
+}

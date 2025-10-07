@@ -347,17 +347,85 @@ a button:hover,
   align-items: center;  
   align-content:center ;
 }
-.tabla-eventos th {
-  background-color: var(--azul-medio);
-  padding: 12px 15px; /* Espaciado interno */
-  text-align: left; /* Alineación del texto a la izquierda */
-  color: var(--blanco); /* Color del texto */
+/* 🔹 Tabla con estilo tipo evento-info */
+.tabla-eventos {
+    width: 100%;
+    max-width: 1000px;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background: #F6FAFD;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 16px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }
+
+.tabla-eventos th,
 .tabla-eventos td {
-  padding: 12px 15px; /* Espaciado interno */
-  text-align: left; /* Alineación del texto a la izquierda */
-  color: var(--azul-oscuro); /* Color del texto */
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
 }
+
+.tabla-eventos th {
+    background: #4A7FA7;
+    color: white;
+}
+
+.tabla-eventos tr:hover {
+    background: #B3CFE5;
+}
+
+/* 📱 Tablas como tarjetas en pantallas pequeñas */
+@media (max-width: 600px) {
+    .tabla-eventos,
+    .tabla-eventos thead,
+    .tabla-eventos tbody,
+    .tabla-eventos th,
+    .tabla-eventos td,
+    .tabla-eventos tr {
+        display: block;
+    }
+
+    .tabla-eventos thead {
+        display: none;
+    }
+
+    .tabla-eventos {
+        background: none;
+    }
+
+    .tabla-eventos tbody tr {
+        margin-bottom: 15px;
+        background: #F6FAFD;
+        border-radius: 15px;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        padding: 10px;
+    }
+
+    .tabla-eventos td {
+        border: none;
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 10px;
+        text-align: left;
+        font-size: 14px;
+        border-bottom: 1px solid #0A1931; 
+    }
+
+    .tabla-eventos td:last-child {
+        border-bottom: none;
+    }
+
+    .tabla-eventos td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #0A1931;
+        flex-basis: 50%;
+        text-align: left;
+    }
+}
+
 #qr{
 
   border-radius: 8px;
