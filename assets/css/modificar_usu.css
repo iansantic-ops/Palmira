@@ -1,0 +1,155 @@
+/* -------------------------------------
+   ESTILO PROFESIONAL PARA MODIFICAR USUARIO
+-------------------------------------- */
+
+:root {
+  --azul-oscuro: #0A1931;
+  --azul-intermedio: #1A3D63;
+  --azul-medio: #4A7FA7;
+  --azul-claro: #B3CFE5;
+  --gris-claro: #f4f6f9;
+  --gris-oscuro: #555;
+  --blanco: #ffffff;
+  --verde: #27ae60;
+  --sombra: rgba(0, 0, 0, 0.1);
+  --rojo: #e74c3c;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--gris-claro);
+  margin: 0;
+  padding: 0;
+  color: var(--azul-oscuro);
+}
+
+/* ---------- HEADER ---------- */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--azul-oscuro);
+  color: var(--blanco);
+  padding: 15px 30px;
+  box-shadow: 0 2px 10px var(--sombra);
+}
+
+header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+header a button {
+  background: var(--azul-medio);
+  color: var(--blanco);
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+header a button:hover {
+  background: var(--azul-intermedio);
+  transform: translateY(-2px);
+}
+
+/* ---------- FORMULARIO ---------- */
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+form {
+  background: var(--blanco);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px var(--sombra);
+  padding: 30px;
+  max-width: 600px;
+  width: 100%;
+}
+
+label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 500;
+  color: var(--azul-intermedio);
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 4px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--azul-medio);
+  box-shadow: 0 0 6px rgba(74, 127, 167, 0.4);
+  outline: none;
+}
+
+/* ---------- BOTÓN ---------- */
+button#modificar {
+  background-color: var(--verde);
+  color: var(--blanco);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button#modificar:hover {
+  background-color: #1e8449;
+  transform: translateY(-2px);
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  header h2 {
+    font-size: 1.3rem;
+  }
+
+  form {
+    padding: 20px;
+  }
+
+  button#modificar {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  form {
+    box-shadow: none;
+    padding: 15px;
+  }
+
+  input,
+  select {
+    font-size: 0.9rem;
+  }
+
+  button#modificar {
+    padding: 10px;
+  }
+}

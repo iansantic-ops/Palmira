@@ -89,9 +89,9 @@ if (isset($_POST['inscribir'])) {
             </div>
             <div class="evento-body">
                 <p><?= htmlspecialchars($row['descripcion'], ENT_QUOTES, 'UTF-8'); ?></p>
-                <p><strong>Fecha:</strong> <?= htmlspecialchars($row['fecha'], ENT_QUOTES, 'UTF-8'); ?></p>
-                <p><strong>Hora:</strong> <?= htmlspecialchars($row['hora'], ENT_QUOTES, 'UTF-8'); ?></p>
-                <p><strong>Lugar:</strong> <?= htmlspecialchars($row['lugar'], ENT_QUOTES, 'UTF-8'); ?></p>
+                <p><strong><img src="assets/img/calendario.png" alt="Icono PNG" class="iconoT1"> Fecha:</strong> <?= htmlspecialchars($row['fecha'], ENT_QUOTES, 'UTF-8'); ?></p>
+                <p><strong><img src="assets/img/reloj.png" alt="Icono PNG" class="iconoT1"> Hora:</strong> <?= htmlspecialchars($row['hora'], ENT_QUOTES, 'UTF-8'); ?></p>
+                <p><strong><img src="assets/img/marcador.png" alt="Icono PNG" class="iconoT1"> Lugar:</strong> <?= htmlspecialchars($row['lugar'], ENT_QUOTES, 'UTF-8'); ?></p>
 
                 <form action="eventos_disponibles.php" method="POST">
                     <input type="hidden" name="idE" value="<?= (int)$row['idE']; ?>">

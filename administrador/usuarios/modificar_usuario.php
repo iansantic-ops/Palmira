@@ -39,6 +39,9 @@ if(isset($_POST['modificar'])){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modificar usuario</title>
     <script src="../../assets/js/validacion.js"></script>
+    <link rel="stylesheet" href="../../assets/css/modificar_usu.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
 </head>
 <body>
     <header>

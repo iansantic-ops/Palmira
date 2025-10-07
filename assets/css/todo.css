@@ -555,6 +555,7 @@ a button:hover,
   }
   #eliminar_asistencia_tel{
     display:block;
+    max-width: 8px;
   }
   #eliminar_asistencia{
     display:none;
@@ -610,6 +611,7 @@ a button:hover,
   }
   #eliminar_asistencia_tel{
     display:block;
+    max-width: 10px;
   }
   #eliminar_asistencia{
     display:none;
