@@ -43,7 +43,44 @@ if (isset($_POST['inscribir'])) {
       object-fit: contain;      
       image-rendering: crisp-edges; 
     }
-  </style>
+
+    /* ====== ESTILO DE LA BARRA DE BÚSQUEDA ====== */
+    .search-bar {
+        margin: 20px auto;
+        text-align: center;
+    }
+
+    .search-bar input[type="text"] {
+        width: 80%;
+        max-width: 400px;
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        outline: none;
+        transition: 0.3s;
+    }
+
+    .search-bar input[type="text"]:focus {
+        border-color: #4A7FA7;
+        box-shadow: 0 0 5px rgba(74, 127, 167, 0.5);
+    }
+
+    .search-bar button {
+        padding: 10px 20px;
+        margin-left: 10px;
+        background-color: #4A7FA7;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .search-bar button:hover {
+        background-color: #1b7f4d;
+    }
+</style>
 <body>
 
 <div class="nav">
@@ -72,35 +109,41 @@ if (isset($_POST['inscribir'])) {
   </div>
 </div>
 <br>
-    <h2>Lista de Eventos</h2>
+<h2>Lista de Eventos</h2>
 
-    <?php if (!empty($mensaje)): ?>
-        <div class="mensaje">
-            <?= htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8'); ?>
+<!-- BARRA DE BÚSQUEDA -->
+<div class="search-bar">
+    <input type="text" id="buscarEvento" placeholder="Buscar evento...">
+</div>
+
+
+<?php if (!empty($mensaje)): ?>
+    <div class="mensaje">
+        <?= htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8'); ?>
+    </div>
+<?php endif; ?>
+
+<!-- Contenedor en grid -->
+<div class="eventos-grid" id="gridEventos">
+<?php foreach ($result as $row): ?>
+    <div class="evento">
+        <div class="evento-header">
+            <h3><?= htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8'); ?></h3>
         </div>
-    <?php endif; ?>
+        <div class="evento-body">
+            <p><?= htmlspecialchars($row['descripcion'], ENT_QUOTES, 'UTF-8'); ?></p>
+            <p><strong><img src="assets/img/calendario.png" alt="Icono PNG" class="iconoT1"> Fecha:</strong> <?= htmlspecialchars($row['fecha'], ENT_QUOTES, 'UTF-8'); ?></p>
+            <p><strong><img src="assets/img/reloj.png" alt="Icono PNG" class="iconoT1"> Hora:</strong> <?= htmlspecialchars($row['hora'], ENT_QUOTES, 'UTF-8'); ?></p>
+            <p><strong><img src="assets/img/marcador.png" alt="Icono PNG" class="iconoT1"> Lugar:</strong> <?= htmlspecialchars($row['lugar'], ENT_QUOTES, 'UTF-8'); ?></p>
 
-    <!-- Contenedor en grid -->
-    <div class="eventos-grid">
-    <?php foreach ($result as $row): ?>
-        <div class="evento">
-            <div class="evento-header">
-                <h3><?= htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8'); ?></h3>
-            </div>
-            <div class="evento-body">
-                <p><?= htmlspecialchars($row['descripcion'], ENT_QUOTES, 'UTF-8'); ?></p>
-                <p><strong><img src="assets/img/calendario.png" alt="Icono PNG" class="iconoT1"> Fecha:</strong> <?= htmlspecialchars($row['fecha'], ENT_QUOTES, 'UTF-8'); ?></p>
-                <p><strong><img src="assets/img/reloj.png" alt="Icono PNG" class="iconoT1"> Hora:</strong> <?= htmlspecialchars($row['hora'], ENT_QUOTES, 'UTF-8'); ?></p>
-                <p><strong><img src="assets/img/marcador.png" alt="Icono PNG" class="iconoT1"> Lugar:</strong> <?= htmlspecialchars($row['lugar'], ENT_QUOTES, 'UTF-8'); ?></p>
-
-                <form action="eventos_disponibles.php" method="POST">
-                    <input type="hidden" name="idE" value="<?= (int)$row['idE']; ?>">
-                    <input type="hidden" name="idR" value="<?= (int)$_SESSION['idUsuario']; ?>" required>
-                    <button type="submit" name="inscribir">Inscribirme <img src="./assets/img/editar.png" alt="Icono PNG" class="iconoT1"></button>
-                </form>
-            </div>
+            <form action="eventos_disponibles.php" method="POST">
+                <input type="hidden" name="idE" value="<?= (int)$row['idE']; ?>">
+                <input type="hidden" name="idR" value="<?= (int)$_SESSION['idUsuario']; ?>" required>
+                <button type="submit" name="inscribir">Inscribirme <img src="./assets/img/editar.png" alt="Icono PNG" class="iconoT1"></button>
+            </form>
         </div>
-    <?php endforeach; ?>
+    </div>
+<?php endforeach; ?>
 </div>
 <div class="apps">
   <div class="btn-principal">
@@ -113,14 +156,24 @@ if (isset($_POST['inscribir'])) {
   </div>
 </div>
 
+<script>
+document.getElementById('buscarEvento').addEventListener('input', function() {
+    const input = this.value.toLowerCase();
+    const eventos = document.querySelectorAll('#gridEventos .evento');
 
-    <script>
-    if (window.history && history.pushState) {
-        history.pushState(null, null, location.href);
-        window.onpopstate = function () {
-            window.location.replace('login.php');
-        };
-    }
-    </script>
+    eventos.forEach(evento => {
+        const nombre = evento.querySelector('h3').textContent.toLowerCase();
+        evento.style.display = nombre.includes(input) ? '' : 'none';
+    });
+});
+
+if (window.history && history.pushState) {
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+        window.location.replace('login.php');
+    };
+}
+</script>
+
 </body>
 </html>
