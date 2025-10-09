@@ -127,6 +127,54 @@ if (isset($_POST['inscribir'])) {
         }
     </style>
 </head>
+<<<<<<< HEAD
+=======
+<style>
+    .iconoT1 {
+      width: 20px;   
+      height: 20px;  
+      object-fit: contain;      
+      image-rendering: crisp-edges; 
+    }
+
+    /* ====== ESTILO DE LA BARRA DE BÚSQUEDA ====== */
+    .search-bar {
+        margin: 20px auto;
+        text-align: center;
+    }
+
+    .search-bar input[type="text"] {
+        width: 80%;
+        max-width: 400px;
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        outline: none;
+        transition: 0.3s;
+    }
+
+    .search-bar input[type="text"]:focus {
+        border-color: #4A7FA7;
+        box-shadow: 0 0 5px rgba(74, 127, 167, 0.5);
+    }
+
+    .search-bar button {
+        padding: 10px 20px;
+        margin-left: 10px;
+        background-color: #4A7FA7;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .search-bar button:hover {
+        background-color: #1b7f4d;
+    }
+</style>
+>>>>>>> 0040f55b851b9b3bda5d8e2174b33d76388e8fcb
 <body>
 
 <div class="nav">
@@ -138,6 +186,7 @@ if (isset($_POST['inscribir'])) {
 </div>
 
 <br>
+<<<<<<< HEAD
 
 <?php if (!$mostrarEventos): ?>
     <h2>Secciones Disponibles</h2>
@@ -160,13 +209,36 @@ if (isset($_POST['inscribir'])) {
     <div class="search-bar">
         <input type="text" id="buscarEvento" placeholder="Buscar evento...">
     </div>
+=======
+<h2>Lista de Eventos</h2>
+>>>>>>> 0040f55b851b9b3bda5d8e2174b33d76388e8fcb
 
-    <?php if (!empty($mensaje)): ?>
-        <div class="mensaje">
-            <?= htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8'); ?>
+<!-- BARRA DE BÚSQUEDA -->
+<div class="search-bar">
+    <input type="text" id="buscarEvento" placeholder="Buscar evento...">
+</div>
+
+
+<?php if (!empty($mensaje)): ?>
+    <div class="mensaje">
+        <?= htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8'); ?>
+    </div>
+<?php endif; ?>
+
+<!-- Contenedor en grid -->
+<div class="eventos-grid" id="gridEventos">
+<?php foreach ($result as $row): ?>
+    <div class="evento">
+        <div class="evento-header">
+            <h3><?= htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8'); ?></h3>
         </div>
-    <?php endif; ?>
+        <div class="evento-body">
+            <p><?= htmlspecialchars($row['descripcion'], ENT_QUOTES, 'UTF-8'); ?></p>
+            <p><strong><img src="assets/img/calendario.png" alt="Icono PNG" class="iconoT1"> Fecha:</strong> <?= htmlspecialchars($row['fecha'], ENT_QUOTES, 'UTF-8'); ?></p>
+            <p><strong><img src="assets/img/reloj.png" alt="Icono PNG" class="iconoT1"> Hora:</strong> <?= htmlspecialchars($row['hora'], ENT_QUOTES, 'UTF-8'); ?></p>
+            <p><strong><img src="assets/img/marcador.png" alt="Icono PNG" class="iconoT1"> Lugar:</strong> <?= htmlspecialchars($row['lugar'], ENT_QUOTES, 'UTF-8'); ?></p>
 
+<<<<<<< HEAD
     <div class="eventos-grid" id="gridEventos">
         <?php foreach ($eventosFiltrados as $row): ?>
             <div class="evento">
@@ -190,6 +262,17 @@ if (isset($_POST['inscribir'])) {
     </div>
 <?php endif; ?>
 
+=======
+            <form action="eventos_disponibles.php" method="POST">
+                <input type="hidden" name="idE" value="<?= (int)$row['idE']; ?>">
+                <input type="hidden" name="idR" value="<?= (int)$_SESSION['idUsuario']; ?>" required>
+                <button type="submit" name="inscribir">Inscribirme <img src="./assets/img/editar.png" alt="Icono PNG" class="iconoT1"></button>
+            </form>
+        </div>
+    </div>
+<?php endforeach; ?>
+</div>
+>>>>>>> 0040f55b851b9b3bda5d8e2174b33d76388e8fcb
 <div class="apps">
     <div class="btn-principal">
         <img src="assets/img/mensajes.png"  class="iconoT1" alt="Redes">
@@ -202,9 +285,16 @@ if (isset($_POST['inscribir'])) {
 </div>
 
 <script>
+<<<<<<< HEAD
 document.getElementById('buscarEvento')?.addEventListener('input', function() {
     const input = this.value.toLowerCase();
     const eventos = document.querySelectorAll('#gridEventos .evento');
+=======
+document.getElementById('buscarEvento').addEventListener('input', function() {
+    const input = this.value.toLowerCase();
+    const eventos = document.querySelectorAll('#gridEventos .evento');
+
+>>>>>>> 0040f55b851b9b3bda5d8e2174b33d76388e8fcb
     eventos.forEach(evento => {
         const nombre = evento.querySelector('h3').textContent.toLowerCase();
         evento.style.display = nombre.includes(input) ? '' : 'none';

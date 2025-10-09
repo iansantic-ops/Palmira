@@ -1,19 +1,30 @@
 <?php
 session_start();
 require_once __DIR__ . "../../../assets/sentenciasSQL/eventos.php";
+<<<<<<< HEAD
 require_once __DIR__ . "../../../assets/sentenciasSQL/secciones.php";
 
 // Verificar sesión del admin
+=======
+
+// Verificar si el admin inició sesión
+>>>>>>> 0040f55b851b9b3bda5d8e2174b33d76388e8fcb
 if (!isset($_SESSION['idAdmin'])) {
     header("Location: ../index.php");
     exit();
 }
 
 $eventos = new Eventos();
+<<<<<<< HEAD
 $secciones = new Secciones();
 
 // ✅ Eliminar evento
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminarEvento'])) {
+=======
+
+// Eliminar evento
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
+>>>>>>> 0040f55b851b9b3bda5d8e2174b33d76388e8fcb
     $idEliminar = intval($_POST['idE']);
     if ($eventos->eliminarEvento($idEliminar)) {
         echo "<script>alert('Evento eliminado correctamente'); window.location='eventos_admin.php?idSeccion={$_GET['idSeccion']}';</script>";
@@ -22,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminarEvento'])) {
     }
 }
 
+<<<<<<< HEAD
 // ✅ Eliminar sección (y sus eventos)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminarSeccion'])) {
     $idSeccion = intval($_POST['idSeccion']);
@@ -40,6 +52,9 @@ if ($idSeccion > 0) {
 } else {
     $listaSecciones = $secciones->obtenerSecciones();
 }
+=======
+$listaEventos = $eventos->leerEventos();
+>>>>>>> 0040f55b851b9b3bda5d8e2174b33d76388e8fcb
 ?>
 
 <!DOCTYPE html>
@@ -50,8 +65,15 @@ if ($idSeccion > 0) {
     <title>Eventos</title>
     <link rel="stylesheet" href="../../assets/css/admin.css">
     <style>
+<<<<<<< HEAD
         body {
             font-family: "Poppins", sans-serif;
+=======
+        /* ====== ESTRUCTURA GENERAL ====== */
+        body {
+            font-family: "Poppins", sans-serif;
+            
+>>>>>>> 0040f55b851b9b3bda5d8e2174b33d76388e8fcb
             margin: 0;
             padding: 0;
         }
@@ -88,6 +110,7 @@ if ($idSeccion > 0) {
             background-color: #1b7f4d;
         }
 
+<<<<<<< HEAD
         .container {
             display: flex;
             flex-wrap: wrap;
@@ -114,6 +137,58 @@ if ($idSeccion > 0) {
             box-shadow: 0 8px 15px rgba(0,0,0,0.15);
         }
 
+=======
+        /* ====== BUSCADOR ====== */
+        .search-bar {
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .search-bar input {
+            width: 80%;
+            max-width: 400px;
+            padding: 10px;
+            font-size: 1rem;
+            border: 2px solid #4A7FA7;
+            border-radius: 10px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            border-color: #1b7f4d;
+            box-shadow: 0 0 5px rgba(27,127,77,0.3);
+        }
+
+        /* ====== CONTENEDOR ====== */
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            padding: 20px;
+        }
+
+        /* ====== TARJETAS ====== */
+        .card {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+
+>>>>>>> 0040f55b851b9b3bda5d8e2174b33d76388e8fcb
         .headerCardEventos {
             display: flex;
             justify-content: center;
@@ -152,6 +227,10 @@ if ($idSeccion > 0) {
             background-color: #1b7f4d;
         }
 
+<<<<<<< HEAD
+=======
+        /* ====== RESPONSIVE ====== */
+>>>>>>> 0040f55b851b9b3bda5d8e2174b33d76388e8fcb
         @media (max-width: 768px) {
             header {
                 flex-direction: column;
@@ -165,10 +244,18 @@ if ($idSeccion > 0) {
             .card {
                 width: 90%;
             }
+<<<<<<< HEAD
+=======
+
+            .search-bar input {
+                width: 90%;
+            }
+>>>>>>> 0040f55b851b9b3bda5d8e2174b33d76388e8fcb
         }
     </style>
 </head>
 <body>
+<<<<<<< HEAD
 
 <header>
     <a href="../menu_admin.php"><button>Volver al menú</button></a>
@@ -232,5 +319,58 @@ if ($idSeccion > 0) {
 
 </div>
 
+=======
+    <header>
+        <a href="../menu_admin.php"><button>Volver al menú</button></a>
+        <h1>Lista de Eventos</h1>
+        <div class="acciones-header">
+            <a href="../perfil_admin.php"><button>Perfil</button></a>
+            <a href="crear_evento.php"><button><img src="../../assets/img/subir evento.png" alt="Crear" class="icono-AM"></button></a>
+        </div>
+    </header>
+
+    <div class="search-bar">
+        <input type="text" id="busqueda" placeholder="🔍 Buscar evento por nombre o lugar...">
+    </div>
+
+    <div class="container" id="contenedor-eventos">
+        <?php if (!empty($listaEventos)): ?>
+            <?php foreach ($listaEventos as $evento): ?>
+                <div class="card" data-nombre="<?= strtolower($evento['nombre']); ?>" data-lugar="<?= strtolower($evento['lugar']); ?>">
+                    <div class="headerCardEventos">
+                        <a href="editar_evento.php?idE=<?= $evento['idE']; ?>"><button><img src="../../assets/img/lapiz.png" class="icono-AM" alt="Editar"></button></a>
+                        <form method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de eliminar este evento?');">
+                            <input type="hidden" name="idE" value="<?= $evento['idE']; ?>">
+                            <button type="submit" name="eliminar"><img src="../../assets/img/basura.png" class="icono-AM" alt="Eliminar"></button>
+                        </form>
+                    </div>
+
+                    <h2><?= htmlspecialchars($evento['nombre']); ?></h2>
+                    <p><strong><img src="../../assets/img/calendario.png" class="icono-AM"> Fecha:</strong> <?= htmlspecialchars($evento['fecha']); ?></p>
+                    <p><strong><img src="../../assets/img/reloj.png" class="icono-AM"> Hora:</strong> <?= htmlspecialchars($evento['hora']); ?></p>
+                    <p><strong><img src="../../assets/img/marcador.png" class="icono-AM"> Lugar:</strong> <?= htmlspecialchars($evento['lugar']); ?></p>
+                    <a class="btn" href="inscritos.php?idE=<?= $evento['idE']; ?>">Información del evento</a>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p>No hay eventos registrados.</p>
+        <?php endif; ?>
+    </div>
+
+    <script>
+        // 🔎 Filtro de búsqueda en tiempo real
+        const inputBusqueda = document.getElementById('busqueda');
+        const tarjetas = document.querySelectorAll('.card');
+
+        inputBusqueda.addEventListener('keyup', () => {
+            const texto = inputBusqueda.value.toLowerCase();
+            tarjetas.forEach(card => {
+                const nombre = card.dataset.nombre;
+                const lugar = card.dataset.lugar;
+                card.style.display = (nombre.includes(texto) || lugar.includes(texto)) ? 'flex' : 'none';
+            });
+        });
+    </script>
+>>>>>>> 0040f55b851b9b3bda5d8e2174b33d76388e8fcb
 </body>
 </html>
