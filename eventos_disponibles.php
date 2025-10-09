@@ -161,11 +161,30 @@ if (isset($_POST['inscribir'])) {
         <input type="text" id="buscarEvento" placeholder="Buscar evento...">
     </div>
 
-    <?php if (!empty($mensaje)): ?>
-        <div class="mensaje">
-            <?= htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8'); ?>
+<!-- BARRA DE BÚSQUEDA -->
+<div class="search-bar">
+    <input type="text" id="buscarEvento" placeholder="Buscar evento...">
+</div>
+
+
+<?php if (!empty($mensaje)): ?>
+    <div class="mensaje">
+        <?= htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8'); ?>
+    </div>
+<?php endif; ?>
+
+<!-- Contenedor en grid -->
+<div class="eventos-grid" id="gridEventos">
+<?php foreach ($result as $row): ?>
+    <div class="evento">
+        <div class="evento-header">
+            <h3><?= htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8'); ?></h3>
         </div>
-    <?php endif; ?>
+        <div class="evento-body">
+            <p><?= htmlspecialchars($row['descripcion'], ENT_QUOTES, 'UTF-8'); ?></p>
+            <p><strong><img src="assets/img/calendario.png" alt="Icono PNG" class="iconoT1"> Fecha:</strong> <?= htmlspecialchars($row['fecha'], ENT_QUOTES, 'UTF-8'); ?></p>
+            <p><strong><img src="assets/img/reloj.png" alt="Icono PNG" class="iconoT1"> Hora:</strong> <?= htmlspecialchars($row['hora'], ENT_QUOTES, 'UTF-8'); ?></p>
+            <p><strong><img src="assets/img/marcador.png" alt="Icono PNG" class="iconoT1"> Lugar:</strong> <?= htmlspecialchars($row['lugar'], ENT_QUOTES, 'UTF-8'); ?></p>
 
     <div class="eventos-grid" id="gridEventos">
         <?php foreach ($eventosFiltrados as $row): ?>
