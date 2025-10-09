@@ -125,6 +125,71 @@ if (isset($_POST['inscribir'])) {
         .seccion-card a:hover {
             background-color: #1b7f4d;
         }
+
+        .eventos-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px;
+        }
+
+        .evento {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+
+        .evento-header h3 {
+            margin: 0 0 10px;
+            color: #4A7FA7;
+        }
+
+        .evento-body p {
+            margin: 5px 0;
+        }
+
+        .evento-body form {
+            margin-top: 10px;
+        }
+
+        .evento-body button {
+            background-color: #4A7FA7;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .evento-body button:hover {
+            background-color: #1b7f4d;
+        }
+
+        .mensaje {
+            background-color: #d9edf7;
+            color: #31708f;
+            padding: 10px 20px;
+            margin: 10px auto;
+            width: fit-content;
+            border-radius: 6px;
+        }
+
+        .btn-accion {
+            display: inline-block;
+            background-color: #4A7FA7;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin: 10px;
+        }
+
+        .btn-accion:hover {
+            background-color: #1b7f4d;
+        }
     </style>
 </head>
 <body>
@@ -154,37 +219,19 @@ if (isset($_POST['inscribir'])) {
 
 <?php if ($mostrarEventos): ?>
     <h2>Eventos de la sección</h2>
-<div style="text-align:center; margin-bottom: 20px;">
+    <div style="text-align:center; margin-bottom: 20px;">
         <a href="eventos_disponibles.php" class="btn-accion">Volver a Secciones</a>
     </div>
+
     <div class="search-bar">
         <input type="text" id="buscarEvento" placeholder="Buscar evento...">
     </div>
 
-<!-- BARRA DE BÚSQUEDA -->
-<div class="search-bar">
-    <input type="text" id="buscarEvento" placeholder="Buscar evento...">
-</div>
-
-
-<?php if (!empty($mensaje)): ?>
-    <div class="mensaje">
-        <?= htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8'); ?>
-    </div>
-<?php endif; ?>
-
-<!-- Contenedor en grid -->
-<div class="eventos-grid" id="gridEventos">
-<?php foreach ($result as $row): ?>
-    <div class="evento">
-        <div class="evento-header">
-            <h3><?= htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8'); ?></h3>
+    <?php if (!empty($mensaje)): ?>
+        <div class="mensaje">
+            <?= htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8'); ?>
         </div>
-        <div class="evento-body">
-            <p><?= htmlspecialchars($row['descripcion'], ENT_QUOTES, 'UTF-8'); ?></p>
-            <p><strong><img src="assets/img/calendario.png" alt="Icono PNG" class="iconoT1"> Fecha:</strong> <?= htmlspecialchars($row['fecha'], ENT_QUOTES, 'UTF-8'); ?></p>
-            <p><strong><img src="assets/img/reloj.png" alt="Icono PNG" class="iconoT1"> Hora:</strong> <?= htmlspecialchars($row['hora'], ENT_QUOTES, 'UTF-8'); ?></p>
-            <p><strong><img src="assets/img/marcador.png" alt="Icono PNG" class="iconoT1"> Lugar:</strong> <?= htmlspecialchars($row['lugar'], ENT_QUOTES, 'UTF-8'); ?></p>
+    <?php endif; ?>
 
     <div class="eventos-grid" id="gridEventos">
         <?php foreach ($eventosFiltrados as $row): ?>
@@ -211,7 +258,7 @@ if (isset($_POST['inscribir'])) {
 
 <div class="apps">
     <div class="btn-principal">
-        <img src="assets/img/mensajes.png"  class="iconoT1" alt="Redes">
+        <img src="assets/img/mensajes.png" class="iconoT1" alt="Redes">
     </div>
     <div class="redes">
         <a href="https://wa.me/+525551721475" id="whatsapp"><img src="assets/img/whatsapp.png" class="iconoT1" alt="Whatsapp"></a>
@@ -221,7 +268,7 @@ if (isset($_POST['inscribir'])) {
 </div>
 
 <script>
-document.getElementById('buscarEvento')?.addEventListener('input', function() {
+document.getElementById('buscarEvento')?.addEventListener('input', function () {
     const input = this.value.toLowerCase();
     const eventos = document.querySelectorAll('#gridEventos .evento');
     eventos.forEach(evento => {
@@ -230,6 +277,7 @@ document.getElementById('buscarEvento')?.addEventListener('input', function() {
     });
 });
 
+// Prevención para evitar retroceso al login
 if (window.history && history.pushState) {
     history.pushState(null, null, location.href);
     window.onpopstate = function () {
