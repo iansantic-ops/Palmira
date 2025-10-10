@@ -171,6 +171,7 @@ a button:hover,
   color: var(--blanco);     
 }
 
+
 .outline {
   position: absolute;
   inset: 0;
@@ -203,6 +204,23 @@ a button:hover,
   color: var(--blanco);
   transform: scale(1.05);
 }
+.btn-accion {
+    padding: 10px 20px;
+    background-color: #4A7FA7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    text-decoration: none;
+    display: inline-block;
+    transition: 0.3s;
+}
+
+.btn-accion:hover {
+    background-color: #1b7f4d;
+}
+
 
 /* Animación SVG en hover */
 .btn:hover ~ svg .rect {
