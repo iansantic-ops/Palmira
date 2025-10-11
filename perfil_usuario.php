@@ -14,12 +14,19 @@ $usuariosObj = new Usuarios();
 $usuario = $usuariosObj->buscarUsuarioPorId($idUsuario); 
 
 // Generar QR del usuario
+// 🔹 Guardar configuración actual de errores
+$old_error_reporting = error_reporting();
+
+// 🔹 Desactivar warnings y notices solo temporalmente
+error_reporting(E_ERROR | E_PARSE);
+
 ob_start();
 QRcode::png($idUsuario, null, QR_ECLEVEL_Q, 5, 2);
 $imageString = ob_get_clean();
 $qrBase64 = base64_encode($imageString);
 $qrDataUri = "data:image/png;base64," . $qrBase64;
-
+// 🔹 Restaurar configuración original
+error_reporting($old_error_reporting);
 // Leer eventos del usuario
 $eventosObj = new Eventos();
 $eventosInscritos = $eventosObj->leerEventosUsuario($idUsuario);
