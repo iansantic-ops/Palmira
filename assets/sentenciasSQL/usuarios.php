@@ -70,36 +70,53 @@ class Usuarios{
         $eliminar=$stmt->execute([':idR' => $idR, ':idE' => $idE]);
         return $eliminar;
     }
-    public function asistencia($idR, $idE) {
-        try {
-            include "Conexion.php";
-            // Verificar si existe inscripción
-            $sql = "SELECT asistio FROM inscripciones WHERE idR = :idR AND idE = :idE";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([":idR" => $idR, ":idE" => $idE]);
-            $registro = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-            if ($registro) {
-                if ($registro['asistio'] == 1) {
-                    // Ya estaba marcada
-                    return false;
-                } else {
-                    // Marcar asistencia
-                    $sqlUpdate = "UPDATE inscripciones 
-                                  SET asistio = 1, fecha_asistencia = NOW() 
-                                  WHERE idR = :idR AND idE = :idE";
-                    $stmtUpdate = $pdo->prepare($sqlUpdate);
-                    $stmtUpdate->execute([":idR" => $idR, ":idE" => $idE]);
-                    return $stmtUpdate;
-                }
-            } else {
-                return false; // No existe inscripción con ese idR
-            }
-        } catch (PDOException $e) {
-            error_log("Error en asistencia: " . $e->getMessage());
-            return false;
+    public function asistencia($idR, $idE, $idS = null) {
+    include "conexion.php";
+
+    try {
+        // 🔹 Verificar si el usuario está inscrito al evento o sección
+        $sqlCheck = "SELECT * FROM inscripciones 
+                     WHERE idR = :idR AND idE = :idE " .
+                     ($idS ? "AND idSeccion = :idS" : "AND idSeccion IS NULL");
+
+        $stmt = $pdo->prepare($sqlCheck);
+        $stmt->bindParam(':idR', $idR);
+        $stmt->bindParam(':idE', $idE);
+        if ($idS) $stmt->bindParam(':idS', $idS);
+        $stmt->execute();
+
+        $inscripcion = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$inscripcion) {
+            return 'no_encontrado'; // Usuario no inscrito
         }
+
+        // 🔹 Verificar si ya marcó asistencia
+        if ($inscripcion['asistio'] == 1) {
+            return 'ya_asistio';
+        }
+
+        // 🔹 Marcar asistencia
+        $update = $pdo->prepare("
+            UPDATE inscripciones 
+            SET asistio = 1, fecha_asistencia = NOW()
+            WHERE idR = :idR AND idE = :idE " . 
+            ($idS ? "AND idSeccion = :idS" : "AND idSeccion IS NULL")
+        );
+
+        $update->bindParam(':idR', $idR);
+        $update->bindParam(':idE', $idE);
+        if ($idS) $update->bindParam(':idS', $idS);
+
+        $update->execute();
+
+        return true;
+    } catch (PDOException $e) {
+        error_log("Error al registrar asistencia: " . $e->getMessage());
+        return false;
     }
+}
+
     public function eliminarUsuario($idR) {
         include "Conexion.php";
         $stmt = $pdo->prepare("DELETE FROM registros WHERE idR = :idR");

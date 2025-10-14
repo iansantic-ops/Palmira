@@ -16,18 +16,32 @@ if (!isset($_GET['idE'])) {
 $idE = intval($_GET['idE']);
 $eventosObj = new Eventos();
 $evento = $eventosObj->leerEventoPorId($idE); 
-$inscritos = $eventosObj->verInscritos($idE);
-$asistentes = $eventosObj->verAsistentes($idE); 
-$estadisticas = $eventosObj->estadisticasEvento($idE);
+$secciones = $eventosObj->obtenerSeccionesPorEvento($idE);
+$seccionSeleccionada = isset($_GET['idSeccion']) ? intval($_GET['idSeccion']) : 0;
 
-if (!empty($estadisticas)) {
-    $totalInscritos = $estadisticas[0]['total_inscritos'];
-    $totalAsistentes = $estadisticas[0]['total_asistentes'];
+// 🔹 Si hay sección seleccionada, cargar solo esa
+if ($seccionSeleccionada > 0) {
+    $inscritos = $eventosObj->verInscritosPorSeccion($idE, $seccionSeleccionada);
+    $asistentes = $eventosObj->verAsistentesPorSeccion($idE, $seccionSeleccionada);
+    $estadisticas = $eventosObj->estadisticasEventoPorSeccion($idE, $seccionSeleccionada);
+
+    $totalInscritos = $estadisticas['total_inscritos'] ?? 0;
+    $totalAsistentes = $estadisticas['total_asistentes'] ?? 0;
     $porcentaje = ($totalInscritos > 0)
-        ? round(($totalAsistentes / $totalInscritos) * 100, 2) 
+        ? round(($totalAsistentes / $totalInscritos) * 100, 2)
         : 0;
+
 } else {
-    $totalInscritos = $totalAsistentes = $porcentaje = 0;
+    // 🔹 Si no hay filtro, mostrar todo el evento
+    $inscritos = $eventosObj->verInscritos($idE);
+    $asistentes = $eventosObj->verAsistentes($idE);
+    $estadisticas = $eventosObj->estadisticasEvento($idE);
+
+    $totalInscritos = $estadisticas[0]['total_inscritos'] ?? 0;
+    $totalAsistentes = $estadisticas[0]['total_asistentes'] ?? 0;
+    $porcentaje = ($totalInscritos > 0)
+        ? round(($totalAsistentes / $totalInscritos) * 100, 2)
+        : 0;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
@@ -40,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -125,6 +140,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
             object-fit: contain;
             image-rendering: crisp-edges;
         }
+        /* Estilo para la etiqueta del select */
+label[for="idSeccion"] {
+  font-weight: 600;
+  color: #0A1931;
+  font-size: 16px;
+  margin-right: 8px;
+  letter-spacing: 0.5px;
+}
+
+/* Estilo para el select de secciones */
+#idSeccion {
+  padding: 8px 18px;
+  border: 1.5px solid #4A7FA7;
+  border-radius: 8px;
+  background: #f5f8fa;
+  color: #0A1931;
+  font-size: 15px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(74,127,167,0.08);
+  transition: border-color 0.3s, box-shadow 0.3s;
+  outline: none;
+  margin-left: 6px;
+  margin-bottom: 8px;
+}
+
+#idSeccion:focus {
+  border-color: #1b7f4d;
+  box-shadow: 0 0 6px rgba(27,127,77,0.18);
+  background: #e8f5e9;
+}
+
+/* Responsive para móviles */
+@media (max-width: 600px) {
+  label[for="idSeccion"] {
+    font-size: 14px;
+    margin-bottom: 4px;
+    display: block;
+  }
+  #idSeccion {
+    width: 100%;
+    font-size: 14px;
+    margin-left: 0;
+  }
+}
     </style>
 </head>
 <body>
@@ -152,6 +211,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar'])) {
             </form>
         </div>
     </div>
+    <?php if (!empty($secciones)): ?>
+<div style="margin: 20px 0;">
+    <form method="GET" action="">
+        <input type="hidden" name="idE" value="<?= $idE ?>">
+        <label for="idSeccion"><strong>Filtrar por sección:</strong></label>
+        <select name="idSeccion" id="idSeccion" onchange="this.form.submit()">
+            <option value="0">Todas las secciones</option>
+            <?php foreach ($secciones as $sec): ?>
+                <option value="<?= $sec['idSeccion']; ?>" <?= $seccionSeleccionada == $sec['idSeccion'] ? 'selected' : ''; ?>>
+                    <?= htmlspecialchars($sec['nombre_seccion']); ?> (<?= $sec['hora_inicio']; ?>)
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </form>
+</div>
+<?php endif; ?>
+
 
     <!-- Menú de pestañas -->
     <div class="tab-menu">

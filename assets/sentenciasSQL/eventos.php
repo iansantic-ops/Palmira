@@ -183,6 +183,58 @@ public function leerEventosPorSeccion($idSeccion) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+public function obtenerSeccionesPorEvento($idE) {
+    include "Conexion.php";
+    $stmt = $pdo->prepare("SELECT idSeccion, nombre_seccion, hora_inicio FROM secciones_evento WHERE idE = :idE");
+    $stmt->execute([':idE' => $idE]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public function verInscritosPorSeccion($idE, $idSeccion = null) {
+    include "Conexion.php";
+    $sql = "
+        SELECT r.idR, r.nombre, r.apellidos, r.lada, r.telefono, r.correo, s.nombre_seccion
+        FROM inscripciones i
+        JOIN registros r ON i.idR = r.idR
+        LEFT JOIN secciones_evento s ON i.idSeccion = s.idSeccion
+        WHERE i.idE = :idE
+    ";
+    if ($idSeccion) {
+        $sql .= " AND i.idSeccion = :idSeccion";
+    }
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':idE', $idE);
+    if ($idSeccion) $stmt->bindParam(':idSeccion', $idSeccion);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+public function verAsistentesPorSeccion($idE, $idSeccion) {
+    include "Conexion.php";
+    $stmt = $pdo->prepare("
+        SELECT r.idR, r.nombre, r.apellidos, r.lada, r.telefono, r.correo, i.fecha_asistencia
+        FROM inscripciones i
+        JOIN registros r ON i.idR = r.idR
+        WHERE i.idE = :idE AND i.idSeccion = :idSeccion AND i.asistio = 1
+    ");
+    $stmt->execute([':idE' => $idE, ':idSeccion' => $idSeccion]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public function estadisticasEventoPorSeccion($idE, $idSeccion) {
+    include "Conexion.php";
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) AS total_inscritos,
+               SUM(CASE WHEN asistio = 1 THEN 1 ELSE 0 END) AS total_asistentes
+        FROM inscripciones
+        WHERE idE = :idE AND idSeccion = :idSeccion
+    ");
+    $stmt->execute([':idE' => $idE, ':idSeccion' => $idSeccion]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+
 
 }
 
