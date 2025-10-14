@@ -34,8 +34,10 @@ class Eventos {
 
    public function leerEventos() {
     try {
-        include"conexion.php";
-        $sql = "SELECT * FROM eventos ORDER BY fecha DESC";
+        include "conexion.php";
+        // 🧩 Ordena por fecha (asc), luego hora (asc) y finalmente nombre (asc)
+        $sql = "SELECT * FROM eventos 
+                ORDER BY fecha ASC, hora ASC, nombre ASC";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
 
@@ -46,6 +48,7 @@ class Eventos {
         return []; // ✅ devuelve array vacío en caso de error
     }
 }
+
 
 
     public function inscribirUsuario($idE, $idR, $idSeccion = null) {
