@@ -165,21 +165,7 @@ p[style*="color:red"] {
   font-weight: bold;
 }
 
-/* ================= RESPONSIVE ================= */
-@media (max-width: 600px) {
-  h2 {
-    font-size: 24px;
-  }
 
-  form {
-    padding: 20px;
-  }
-
-  button[type="submit"], .regresar {
-    font-size: 14px;
-    padding: 8px 16px;
-  }
-}
 
 /* ================= VALIDACIÓN ================= */
 input.valid, textarea.valid {
@@ -191,3 +177,118 @@ input.invalid, textarea.invalid {
   border: 2px solid red;
   background: #ffebee;
 }
+
+/* ...existing code... */
+
+#agg_sub {
+  width: 50%;
+  height: 32px;
+  padding: 0;
+  background: var(--azul-medio);
+  color: var(--blanco);
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 6px var(--sombra-azul);
+  transition: background 0.6s, transform 0.6s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+   margin-top: 10px;
+}
+
+#agg_sub:hover {
+  background: var(--verde-medio);
+  color: var(--blanco);
+  transform: scale(1.08);
+}
+/* ...existing code... */
+
+.seccion-item {
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: opacity 0.6s, transform 0.6s;
+}
+
+.seccion-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ...existing code... */
+/* ...existing code... */
+
+/* ================= RESPONSIVE GENERAL ================= */
+@media (max-width: 900px) {
+  form {
+    max-width: 95vw;
+    padding: 20px;
+  }
+  header {
+    flex-direction: column;
+    padding: 16px 10px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 600px) {
+  body {
+    padding-top: 40px;
+  }
+  header {
+    font-size: 16px;
+    margin-bottom: 20px;
+    padding: 10px 5px;
+  }
+  header h2 {
+    font-size: 18px;
+  }
+  form {
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  }
+  label {
+    font-size: 14px;
+    margin: 8px 0 3px 0;
+  }
+  input, textarea {
+    font-size: 13px;
+    padding: 8px;
+    border-radius: 6px;
+  }
+  button[type="submit"], .regresar, #agg_sub {
+    font-size: 13px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    width: 100%;
+    margin-top: 10px;
+  }
+  #agg_sub {
+    height: 28px;
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+  .seccion-item {
+    flex-direction: column;
+    gap: 6px;
+    padding: 6px 0;
+  }
+}
+
+@media (max-width: 400px) {
+  header h2 {
+    font-size: 15px;
+  }
+  form {
+    padding: 4px;
+  }
+  label, input, textarea {
+    font-size: 12px;
+  }
+}
+
+/* ...existing code... */
+/* ...existing code... */

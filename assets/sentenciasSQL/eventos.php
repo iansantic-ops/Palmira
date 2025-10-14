@@ -3,11 +3,11 @@
 
 class Eventos {
 
-    public function crearEvento($idEvento, $nombre, $descripcion, $fecha, $hora, $lugar, $aforoMax, $idSeccion) {
+    public function crearEvento($idEvento, $nombre, $descripcion, $fecha, $hora, $lugar, $aforoMax) {
     include "Conexion.php";
     $stmt = $pdo->prepare("
-        INSERT INTO eventos (idE, nombre, descripcion, fecha, hora, lugar, aforo_max, idSeccion)
-        VALUES (:idEvento, :nombre, :descripcion, :fecha, :hora, :lugar, :aforoMax, :idSeccion)
+        INSERT INTO eventos (idE, nombre, descripcion, fecha, hora, lugar, aforo_max)
+        VALUES (:idEvento, :nombre, :descripcion, :fecha, :hora, :lugar, :aforoMax)
     ");
 
     try {
@@ -18,8 +18,7 @@ class Eventos {
             ':fecha'      => $fecha,
             ':hora'       => $hora,
             ':lugar'      => $lugar,
-            ':aforoMax'   => $aforoMax,
-            ':idSeccion'  => $idSeccion
+            ':aforoMax'   => $aforoMax
         ]);
         return $alta;
     } catch (PDOException $e) {
@@ -33,32 +32,57 @@ class Eventos {
 }
 
 
-    public function leerEventos() {
-        include "Conexion.php";
-        $stmt = $pdo->prepare("SELECT * FROM eventos ORDER BY fecha ASC");
+   public function leerEventos() {
+    try {
+        include"conexion.php";
+        $sql = "SELECT * FROM eventos ORDER BY fecha DESC";
+        $stmt = $pdo->prepare($sql);
         $stmt->execute();
-        $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $eventos;
+
+        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $resultados ?: []; // ✅ siempre devuelve array
+    } catch (PDOException $e) {
+        error_log("Error al leer eventos: " . $e->getMessage());
+        return []; // ✅ devuelve array vacío en caso de error
     }
+}
 
-    public function inscribirUsuario($idEvento, $idUsuario) {
-        include "Conexion.php";
 
-        // Primero checamos si ya está inscrito
-        $stmt = $pdo->prepare("SELECT * FROM inscripciones WHERE idE = :idEvento AND idR = :idUsuario");
-        $stmt->execute([':idEvento'=>$idEvento, ':idUsuario'=>$idUsuario]);
-        $yaExiste = $stmt->fetch(PDO::FETCH_ASSOC);
+    public function inscribirUsuario($idE, $idR, $idSeccion = null) {
+    try {
+        include "conexion.php";
 
-        if ($yaExiste) {
+        // Validar si ya está inscrito en esa misma sección
+        $sqlCheck = "SELECT * FROM inscripciones WHERE idR = :idR AND idE = :idE AND idSeccion " . 
+                    ($idSeccion ? "= :idSeccion" : "IS NULL");
+        $stmt = $pdo->prepare($sqlCheck);
+        $stmt->bindParam(':idR', $idR);
+        $stmt->bindParam(':idE', $idE);
+        if ($idSeccion) $stmt->bindParam(':idSeccion', $idSeccion);
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
             return 'duplicado';
         }
 
-        // Insertamos inscripción
-        $stmt = $pdo->prepare("INSERT INTO inscripciones (idE, idR) VALUES (:idEvento, :idUsuario)");
-        $ok = $stmt->execute([':idEvento'=>$idEvento, ':idUsuario'=>$idUsuario]);
+        // Insertar inscripción
+        $sqlInsert = "INSERT INTO inscripciones (idI, idR, idE, idSeccion, fecha_inscripcion, asistio)
+                      VALUES (:idI, :idR, :idE, :idSeccion, NOW(), 0)";
+        $stmt = $pdo->prepare($sqlInsert);
+        $idI = random_int(10000000, 99999999);
+        $stmt->bindParam(':idI', $idI);
+        $stmt->bindParam(':idR', $idR);
+        $stmt->bindParam(':idE', $idE);
+        $stmt->bindParam(':idSeccion', $idSeccion);
+        $stmt->execute();
 
-        return $ok ? 'true' : 'false';
+        return 'true';
+    } catch (PDOException $e) {
+        error_log("Error al inscribir usuario: " . $e->getMessage());
+        return 'error';
     }
+}
+
 
    public function verInscritos($idEvento) {
         include "Conexion.php";
@@ -82,7 +106,8 @@ class Eventos {
     ");
     $stmt->execute([':idR' => $idR]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+   }
+
 public function leerEventoPorId($idEvento) {
     include "Conexion.php";
     $stmt = $pdo->prepare("SELECT * FROM eventos WHERE idE = :idEvento LIMIT 1");

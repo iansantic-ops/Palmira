@@ -1,85 +1,20 @@
 <?php
+include "conexion.php";
 
 class Secciones {
-
-    // 🟢 Crear una nueva sección
-    public function crearSeccion($nombre, $descripcion) {
-        include "Conexion.php"; // obtiene $pdo desde tu conexión
-        $stmt = $pdo->prepare("INSERT INTO secciones (nombre_seccion, descripcion) VALUES (:nombre, :descripcion)");
-
-        try {
-            $ok = $stmt->execute([
-                ':nombre' => $nombre,
-                ':descripcion' => $descripcion
-            ]);
-            return $ok;
-        } catch (PDOException $e) {
-            if ($e->getCode() === "23000") {
-                // clave duplicada (por nombre único, si lo tienes)
-                return 'duplicado';
-            } else {
-                return false;
-            }
-        }
+    public function crear_seccion($idE, $nombre, $hora_inicio) {
+        include "conexion.php";
+        $sql = "INSERT INTO secciones_evento (idE, nombre_seccion, hora_inicio) VALUES (?, ?, ?)";
+        $stmt = $pdo->prepare($sql);
+        return $stmt->execute([$idE, $nombre, $hora_inicio]);
     }
 
-    // 🟡 Leer todas las secciones
-    public function obtenerSecciones() {
-        include "Conexion.php";
-        $stmt = $pdo->prepare("SELECT * FROM secciones ORDER BY idSeccion ASC");
-        $stmt->execute();
+    public function obtenerSeccionesPorEvento($idE) {
+        include "conexion.php";
+        $sql = "SELECT * FROM secciones_evento WHERE idE = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$idE]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    // 🔵 Leer una sección específica
-    public function obtenerSeccionPorId($idSeccion) {
-        include "Conexion.php";
-        $stmt = $pdo->prepare("SELECT * FROM secciones WHERE idSeccion = :idSeccion LIMIT 1");
-        $stmt->execute([':idSeccion' => $idSeccion]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    // 🟣 Actualizar una sección
-    public function actualizarSeccion($idSeccion, $nombre, $descripcion) {
-        include "Conexion.php";
-        $stmt = $pdo->prepare("UPDATE secciones 
-                               SET nombre_seccion = :nombre, 
-                                   descripcion = :descripcion
-                               WHERE idSeccion = :idSeccion");
-        return $stmt->execute([
-            ':nombre' => $nombre,
-            ':descripcion' => $descripcion,
-            ':idSeccion' => $idSeccion
-        ]);
-    }
-
-    // 🔴 Eliminar solo una sección (sin tocar eventos)
-    public function eliminarSeccion($idSeccion) {
-        include "Conexion.php";
-        $stmt = $pdo->prepare("DELETE FROM secciones WHERE idSeccion = :idSeccion");
-        return $stmt->execute([':idSeccion' => $idSeccion]);
-    }
-
-    // ⚫ Eliminar sección y todos sus eventos
-    public function eliminarSeccionYEventos($idSeccion) {
-        include "Conexion.php";
-        try {
-            $pdo->beginTransaction();
-
-            // Primero eliminar los eventos de esa sección
-            $stmtEventos = $pdo->prepare("DELETE FROM eventos WHERE idSeccion = :idSeccion");
-            $stmtEventos->execute([':idSeccion' => $idSeccion]);
-
-            // Luego eliminar la sección
-            $stmtSeccion = $pdo->prepare("DELETE FROM secciones WHERE idSeccion = :idSeccion");
-            $stmtSeccion->execute([':idSeccion' => $idSeccion]);
-
-            $pdo->commit();
-            return true;
-        } catch (PDOException $e) {
-            $pdo->rollBack();
-            return false;
-        }
     }
 }
 ?>

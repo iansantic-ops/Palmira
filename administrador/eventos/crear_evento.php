@@ -7,42 +7,44 @@ if (!isset($_SESSION['idAdmin'])) {
     exit();
 }
 
-include_once __DIR__ . ("../../../assets/sentenciasSQL/eventos.php");
-include_once __DIR__ . ("../../../assets/sentenciasSQL/secciones.php"); // ✅ incluir clase Secciones
-
-// 🟦 Obtener todas las secciones para llenar el select
-$seccionModel = new Secciones();
-$listaSecciones = $seccionModel->obtenerSecciones();
+require_once "../../assets/sentenciasSQL/eventos.php";
+require_once "../../assets/sentenciasSQL/secciones.php";
 
 if (isset($_POST['crear'])) {
-    $idEvento       = random_int(10000000, 99999999);
-    $nombre_evento  = htmlspecialchars(trim($_POST['nombre_evento']), ENT_QUOTES, 'UTF-8');
-    $descripcion    = htmlspecialchars(trim($_POST['descripcion']), ENT_QUOTES, 'UTF-8');
-    $fecha          = $_POST['fecha'];
-    $hora           = $_POST['hora'];
-    $lugar          = htmlspecialchars(trim($_POST['lugar']), ENT_QUOTES, 'UTF-8');
-    $aforo_max      = intval($_POST['aforo_max']);
-    $idSeccion      = intval($_POST['idSeccion']); // 🔹 guardar la sección seleccionada
+    $idEvento      = random_int(10000000, 99999999);
+    $nombre_evento = htmlspecialchars(trim($_POST['nombre_evento']), ENT_QUOTES, 'UTF-8');
+    $descripcion   = htmlspecialchars(trim($_POST['descripcion']), ENT_QUOTES, 'UTF-8');
+    $fecha         = $_POST['fecha'];
+    $hora          = $_POST['hora'];
+    $lugar         = htmlspecialchars(trim($_POST['lugar']), ENT_QUOTES, 'UTF-8');
+    $aforo_max     = intval($_POST['aforo_max']);
 
-    // Validar que se haya seleccionado una sección
-    if ($idSeccion <= 0) {
-        echo "<script>alert('Debes seleccionar una sección antes de crear el evento.');</script>";
-    } else {
-        $crear_evento = new Eventos();
-        $crear = $crear_evento->crearEvento($idEvento, $nombre_evento, $descripcion, $fecha, $hora, $lugar, $aforo_max, $idSeccion);
+    $crear_evento = new Eventos();
+    $crear_secciones = new Secciones();
 
-        if ($crear === true) {
-            echo "<script>alert('Evento creado exitosamente'); window.location='eventos_admin.php';</script>";
-            exit();
-        } elseif ($crear === 'duplicado') {
-            echo "<script>alert('Un evento con la misma información ya existe. Intenta de nuevo.');</script>";
-        } else {
-            echo "<script>alert('Error al crear el evento. Por favor, intenta de nuevo.');</script>";
+    // Primero crear el evento
+    $crear = $crear_evento->crearEvento($idEvento, $nombre_evento, $descripcion, $fecha, $hora, $lugar, $aforo_max);
+
+    if ($crear === true) {
+        // Si el evento se creó correctamente, insertar las secciones
+        if (!empty($_POST['seccion_nombre'])) {
+            foreach ($_POST['seccion_nombre'] as $i => $nombreSeccion) {
+                $nombreSeccion = htmlspecialchars(trim($nombreSeccion), ENT_QUOTES, 'UTF-8');
+                $horaInicio = $_POST['hora_inicio'][$i];
+                $crear_secciones->crear_seccion($idEvento, $nombreSeccion, $horaInicio);
+            }
         }
+
+        echo "<script>alert('✅ Evento y sub-eventos creados correctamente'); window.location='eventos_admin.php';</script>";
+        exit();
+    } elseif ($crear === 'duplicado') {
+        echo "<script>alert('⚠️ Un evento con la misma información ya existe.');</script>";
+    } else {
+        echo "<script>alert('❌ Error al crear el evento.');</script>";
     }
 }
-
 ?>
+
 
 
 <!DOCTYPE html>
@@ -93,15 +95,38 @@ input.invalid, textarea.invalid {
 
     <label>Capacidad máxima:</label>
     <input type="number" id="aforo_max" name="aforo_max" min="1" required>
-<label>Sección:</label>
-        <select id="idSeccion" name="idSeccion" required>
-            <option value="">Seleccione una sección</option>
-            <?php foreach ($listaSecciones as $sec): ?>
-                <option value="<?= $sec['idSeccion']; ?>">
-                    <?= htmlspecialchars($sec['nombre_seccion']); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
+
+
+<label>Sub-eventos</label>
+<div id="contenedor-secciones">
+
+</div>
+
+<button type="button" id="agg_sub"onclick="agregarSeccion()">➕ Agregar un "Sub-evento"</button>
+
+<script>
+// ...existing code...
+function agregarSeccion() {
+  const div = document.createElement('div');
+  div.classList.add('seccion-item');
+  div.innerHTML = `
+    <label>Nombre:</label>
+    <input type="text" name="seccion_nombre[]" required>
+    <label>Hora inicio:</label>
+    <input type="time" name="hora_inicio[]" required>
+    <button type="button" onclick="eliminarSeccion(this)">Eliminar</button>
+  `;
+  document.getElementById('contenedor-secciones').appendChild(div);
+  // Espera un momento y agrega la clase visible para activar la transición
+  setTimeout(() => div.classList.add('visible'), 10);
+}
+// ...existing code...
+
+function eliminarSeccion(btn) {
+  btn.parentElement.remove();
+}
+</script>
+
     <br><br>
     <button type="submit" name="crear">Crear evento</button>
 </form>

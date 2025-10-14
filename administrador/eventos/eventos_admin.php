@@ -1,7 +1,6 @@
 <?php
 session_start();
 require_once __DIR__ . "../../../assets/sentenciasSQL/eventos.php";
-require_once __DIR__ . "../../../assets/sentenciasSQL/secciones.php";
 
 // Verificar sesión del admin
 if (!isset($_SESSION['idAdmin'])) {
@@ -10,36 +9,19 @@ if (!isset($_SESSION['idAdmin'])) {
 }
 
 $eventos = new Eventos();
-$secciones = new Secciones();
 
 // ✅ Eliminar evento
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminarEvento'])) {
     $idEliminar = intval($_POST['idE']);
     if ($eventos->eliminarEvento($idEliminar)) {
-        echo "<script>alert('Evento eliminado correctamente'); window.location='eventos_admin.php?idSeccion={$_GET['idSeccion']}';</script>";
+        echo "<script>alert('Evento eliminado correctamente'); window.location='eventos_admin.php';</script>";
     } else {
         echo "<script>alert('Error al eliminar el evento');</script>";
     }
 }
 
-// ✅ Eliminar sección (y sus eventos)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminarSeccion'])) {
-    $idSeccion = intval($_POST['idSeccion']);
-    if ($secciones->eliminarSeccionYEventos($idSeccion)) {
-        echo "<script>alert('Sección y sus eventos eliminados correctamente'); window.location='eventos_admin.php';</script>";
-    } else {
-        echo "<script>alert('Error al eliminar la sección');</script>";
-    }
-}
-
-// Mostrar secciones o eventos
-$idSeccion = isset($_GET['idSeccion']) ? intval($_GET['idSeccion']) : 0;
-
-if ($idSeccion > 0) {
-    $listaEventos = $eventos->leerEventosPorSeccion($idSeccion);
-} else {
-    $listaSecciones = $secciones->obtenerSecciones();
-}
+// ✅ Leer todos los eventos
+$listaEventos = $eventos->leerEventos();
 ?>
 
 <!DOCTYPE html>
@@ -47,17 +29,26 @@ if ($idSeccion > 0) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eventos</title>
+    <title>Gestión de Eventos</title>
     <link rel="stylesheet" href="../../assets/css/admin.css">
     <style>
+        :root {
+            --azul-oscuro: #0A1931;
+            --azul-medio: #4A7FA7;
+            --azul-intermedio: #1A3D63;
+            --azul-claro: #B3CFE5;
+            --verde-oscuro: #1b7f4d;
+        }
+
         body {
             font-family: "Poppins", sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f6f9fc;
         }
 
         header {
-            background: #0A1931;
+            background: var(--azul-oscuro);
             color: white;
             padding: 15px;
             display: flex;
@@ -71,11 +62,12 @@ if ($idSeccion > 0) {
         header h1 {
             flex: 1 1 100%;
             margin: 0;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
+            text-align: center;
         }
 
         header a button {
-            background-color: #4A7FA7;
+            background-color: var(--azul-medio);
             color: white;
             border: none;
             border-radius: 8px;
@@ -85,7 +77,8 @@ if ($idSeccion > 0) {
         }
 
         header a button:hover {
-            background-color: #1b7f4d;
+            background-color: var(--verde-oscuro);
+            transform: scale(1.05);
         }
 
         .container {
@@ -93,7 +86,7 @@ if ($idSeccion > 0) {
             flex-wrap: wrap;
             justify-content: center;
             gap: 25px;
-            padding: 20px;
+            padding: 25px;
         }
 
         .card {
@@ -125,11 +118,12 @@ if ($idSeccion > 0) {
             background: none;
             border: none;
             cursor: pointer;
-            transition: transform 0.2s ease;
+            transition: transform 0.2s ease, filter 0.2s;
         }
 
         .headerCardEventos button:hover {
             transform: scale(1.1);
+            filter: brightness(1.3);
         }
 
         .icono-AM {
@@ -139,7 +133,7 @@ if ($idSeccion > 0) {
 
         .btn {
             display: inline-block;
-            background-color: #4A7FA7;
+            background-color: var(--azul-medio);
             color: #fff;
             text-decoration: none;
             padding: 10px 15px;
@@ -149,7 +143,8 @@ if ($idSeccion > 0) {
         }
 
         .btn:hover {
-            background-color: #1b7f4d;
+            background-color: var(--verde-oscuro);
+            transform: scale(1.05);
         }
 
         @media (max-width: 768px) {
@@ -172,62 +167,39 @@ if ($idSeccion > 0) {
 
 <header>
     <a href="../menu_admin.php"><button>Volver al menú</button></a>
-    <h1><?= $idSeccion > 0 ? 'Eventos por Sección' : 'Secciones Disponibles'; ?></h1>
+    <h1>Gestión de Eventos</h1>
     <div class="acciones-header">
         <a href="../perfil_admin.php"><button>Perfil</button></a>
-        <a href="crear_seccion.php"><button>Nueva Sección</button></a>
         <a href="crear_evento.php"><button><img src="../../assets/img/subir evento.png" alt="Crear" class="icono-AM"></button></a>
     </div>
 </header>
 
 <div class="container">
 
-<?php if ($idSeccion == 0): ?>
-    <!-- 🔹 SECCIONES -->
-    <?php if (!empty($listaSecciones)): ?>
-        <?php foreach ($listaSecciones as $seccion): ?>
-            <div class="card">
-                <div class="headerCardEventos">
-                    <a href="editar_seccion.php?idSeccion=<?= $seccion['idSeccion']; ?>">
-                        <button><img src="../../assets/img/lapiz.png" class="icono-AM" alt="Editar"></button>
-                    </a>
-                    <form method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar esta sección y todos sus eventos?');">
-                        <input type="hidden" name="idSeccion" value="<?= $seccion['idSeccion']; ?>">
-                        <button type="submit" name="eliminarSeccion"><img src="../../assets/img/basura.png" class="icono-AM" alt="Eliminar"></button>
-                    </form>
-                </div>
-                <h2><?= htmlspecialchars($seccion['nombre_seccion']); ?></h2>
-                <p><?= htmlspecialchars($seccion['descripcion']); ?></p>
-                <a href="eventos_admin.php?idSeccion=<?= $seccion['idSeccion']; ?>" class="btn">Mostrar eventos</a>
+<?php if (!empty($listaEventos)): ?>
+    <?php foreach ($listaEventos as $evento): ?>
+        <div class="card">
+            <div class="headerCardEventos">
+                <a href="editar_evento.php?idE=<?= $evento['idE']; ?>">
+                    <button><img src="../../assets/img/lapiz.png" class="icono-AM" alt="Editar"></button>
+                </a>
+                <form method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar este evento?');">
+                    <input type="hidden" name="idE" value="<?= $evento['idE']; ?>">
+                    <button type="submit" name="eliminarEvento">
+                        <img src="../../assets/img/basura.png" class="icono-AM" alt="Eliminar">
+                    </button>
+                </form>
             </div>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <p>No hay secciones registradas.</p>
-    <?php endif; ?>
 
+            <h2><?= htmlspecialchars($evento['nombre']); ?></h2>
+            <p><strong>📅 Fecha:</strong> <?= htmlspecialchars($evento['fecha']); ?></p>
+            <p><strong>🕒 Hora:</strong> <?= htmlspecialchars($evento['hora']); ?></p>
+            <p><strong>📍 Lugar:</strong> <?= htmlspecialchars($evento['lugar']); ?></p>
+            <a class="btn" href="inscritos.php?idE=<?= $evento['idE']; ?>">Ver información</a>
+        </div>
+    <?php endforeach; ?>
 <?php else: ?>
-    <!-- 🔹 EVENTOS DE LA SECCIÓN -->
-    <a href="eventos_admin.php" class="btn" style="margin-bottom:20px;">⬅ Volver a secciones</a>
-    <?php if (!empty($listaEventos)): ?>
-        <?php foreach ($listaEventos as $evento): ?>
-            <div class="card">
-                <div class="headerCardEventos">
-                    <a href="editar_evento.php?idE=<?= $evento['idE']; ?>"><button><img src="../../assets/img/lapiz.png" class="icono-AM" alt="Editar"></button></a>
-                    <form method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar este evento?');">
-                        <input type="hidden" name="idE" value="<?= $evento['idE']; ?>">
-                        <button type="submit" name="eliminarEvento"><img src="../../assets/img/basura.png" class="icono-AM" alt="Eliminar"></button>
-                    </form>
-                </div>
-                <h2><?= htmlspecialchars($evento['nombre']); ?></h2>
-                <p><strong>📅 Fecha:</strong> <?= htmlspecialchars($evento['fecha']); ?></p>
-                <p><strong>🕒 Hora:</strong> <?= htmlspecialchars($evento['hora']); ?></p>
-                <p><strong>📍 Lugar:</strong> <?= htmlspecialchars($evento['lugar']); ?></p>
-                <a class="btn" href="inscritos.php?idE=<?= $evento['idE']; ?>">Información del evento</a>
-            </div>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <p>No hay eventos en esta sección.</p>
-    <?php endif; ?>
+    <p>No hay eventos registrados.</p>
 <?php endif; ?>
 
 </div>
