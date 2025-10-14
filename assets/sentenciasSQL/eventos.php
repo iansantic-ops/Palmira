@@ -64,7 +64,6 @@ class Eventos {
         if ($stmt->rowCount() > 0) {
             return 'duplicado';
         }
-
         // Insertar inscripción
         $sqlInsert = "INSERT INTO inscripciones (idI, idR, idE, idSeccion, fecha_inscripcion, asistio)
                       VALUES (:idI, :idR, :idE, :idSeccion, NOW(), 0)";
@@ -96,17 +95,29 @@ class Eventos {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function leerEventosUsuario($idR) {
-    include "Conexion.php"; // Incluye el PDO dentro del método
+    include "conexion.php";
+
     $stmt = $pdo->prepare("
-        SELECT e.*
-        FROM eventos e
-        INNER JOIN inscripciones i ON e.idE = i.idE
-        WHERE i.idR = :idR
-        ORDER BY e.fecha ASC
+        SELECT 
+            e.idE,
+            e.nombre AS nombre,
+            e.fecha AS fecha,
+            e.hora AS hora,
+            e.lugar AS lugar,
+            s.nombre_seccion AS seccion,
+            s.hora_inicio,
+            i.fecha_inscripcion
+        FROM inscripciones i
+        JOIN eventos e ON i.idE = e.idE
+        LEFT JOIN secciones_evento s ON i.idSeccion = s.idSeccion
+        WHERE i.idR = :idUsuario
+        ORDER BY e.fecha, s.hora_inicio
     ");
-    $stmt->execute([':idR' => $idR]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-   }
+    $stmt->execute([':idUsuario' => $idR]);
+    $inscripciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $inscripciones ?: [];
+}
+
 
 public function leerEventoPorId($idEvento) {
     include "Conexion.php";

@@ -27,6 +27,8 @@ $qrBase64 = base64_encode($imageString);
 $qrDataUri = "data:image/png;base64," . $qrBase64;
 // 🔹 Restaurar configuración original
 error_reporting($old_error_reporting);
+
+
 // Leer eventos del usuario
 $eventosObj = new Eventos();
 $eventosInscritos = $eventosObj->leerEventosUsuario($idUsuario);
@@ -122,6 +124,7 @@ if(isset($_POST['eliminar']) && isset($_POST['idE'])) {
                 <th>Fecha</th>
                 <th>Hora</th>
                 <th>Lugar</th>
+                <th>Seccion</th>
                 <th>Acción</th>
             </tr>
         </thead>
@@ -132,6 +135,7 @@ if(isset($_POST['eliminar']) && isset($_POST['idE'])) {
                 <td data-label="Fecha"><?= htmlspecialchars($evento['fecha'], ENT_QUOTES, 'UTF-8'); ?></td>
                 <td data-label="Hora"><?= htmlspecialchars($evento['hora'], ENT_QUOTES, 'UTF-8'); ?></td>
                 <td data-label="Lugar"><?= htmlspecialchars($evento['lugar'], ENT_QUOTES, 'UTF-8'); ?></td>
+                <td><?= htmlspecialchars($evento['seccion'] ?: 'General' );?></td>
                 <td data-label="Acción">
                     <form action="perfil_usuario.php" method="post" style="display:inline;">
                         <input type="hidden" name="idE" value="<?= htmlspecialchars($evento['idE'], ENT_QUOTES, 'UTF-8'); ?>">
