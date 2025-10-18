@@ -10,6 +10,8 @@ if (!isset($_SESSION['idAdmin'])) {
 require_once "../../assets/sentenciasSQL/eventos.php";
 require_once "../../assets/sentenciasSQL/secciones.php";
 
+$mensaje = "";
+
 if (isset($_POST['crear'])) {
     $idEvento      = random_int(10000000, 99999999);
     $nombre_evento = htmlspecialchars(trim($_POST['nombre_evento']), ENT_QUOTES, 'UTF-8');
@@ -18,15 +20,16 @@ if (isset($_POST['crear'])) {
     $hora          = $_POST['hora'];
     $lugar         = htmlspecialchars(trim($_POST['lugar']), ENT_QUOTES, 'UTF-8');
     $aforo_max     = intval($_POST['aforo_max']);
+    $mapa          = !empty($_POST['mapa']) ? trim($_POST['mapa']) : null;
 
-    $crear_evento = new Eventos();
-    $crear_secciones = new Secciones();
+    $crear_evento_obj = new Eventos();
+    $crear_secciones  = new Secciones();
 
-    // Primero crear el evento
-    $crear = $crear_evento->crearEvento($idEvento, $nombre_evento, $descripcion, $fecha, $hora, $lugar, $aforo_max);
+    // Crear evento
+    $crear = $crear_evento_obj->crearEvento($idEvento, $nombre_evento, $descripcion, $fecha, $hora, $lugar, $aforo_max, $mapa);
 
     if ($crear === true) {
-        // Si el evento se creó correctamente, insertar las secciones
+        // Insertar sub-eventos si existen
         if (!empty($_POST['seccion_nombre'])) {
             foreach ($_POST['seccion_nombre'] as $i => $nombreSeccion) {
                 $nombreSeccion = htmlspecialchars(trim($nombreSeccion), ENT_QUOTES, 'UTF-8');
@@ -38,14 +41,12 @@ if (isset($_POST['crear'])) {
         echo "<script>alert('✅ Evento y sub-eventos creados correctamente'); window.location='eventos_admin.php';</script>";
         exit();
     } elseif ($crear === 'duplicado') {
-        echo "<script>alert('⚠️ Un evento con la misma información ya existe.');</script>";
+        $mensaje = "⚠️ Un evento con la misma información ya existe.";
     } else {
-        echo "<script>alert('❌ Error al crear el evento.');</script>";
+        $mensaje = "❌ Error al crear el evento.";
     }
 }
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="es">
@@ -55,91 +56,75 @@ if (isset($_POST['crear'])) {
     <title>Crear Evento</title>
     <script src="../../assets/js/validacion_evento.js"></script>
     <link rel="stylesheet" href="../../assets/css/eventos.css">
-
+    <style>
+        input.valid, textarea.valid { border: 2px solid green; background: #e8f5e9; }
+        input.invalid, textarea.invalid { border: 2px solid red; background: #ffebee; }
+        .seccion-item { margin-bottom: 10px; transition: all 0.3s ease; }
+        .seccion-item.visible { opacity: 1; transform: translateY(0); }
+    </style>
 </head>
-<style>
-input.valid, textarea.valid {
-  border: 2px solid green;
-  background: #e8f5e9;
-}
-
-input.invalid, textarea.invalid {
-  border: 2px solid red;
-  background: #ffebee;
-}
-</style>
 <body>
     <header>
         <h2>Crear Evento</h2>
-        <button class="regresar" onclick="window.history.back()">   
-            <span>Volver</span>
-        </button>
+        <button class="regresar" onclick="window.history.back()"><span>Volver</span></button>
     </header>
-     
-    
-   <form id="formEvento" action="crear_evento.php" method="POST">
-    <label>Nombre del evento:</label>
-    <input type="text" id="nombre_evento" name="nombre_evento" required>
 
-    <label>Descripción:</label>
-    <textarea id="descripcion" name="descripcion"></textarea>
+    <form id="formEvento" action="" method="POST">
+        <?php if(!empty($mensaje)) echo "<p style='color:red;text-align:center;'>$mensaje</p>"; ?>
+        <label>Nombre del evento:</label>
+        <input type="text" id="nombre_evento" name="nombre_evento" required>
 
-    <label for="date">Fecha:</label>
-    <input type="date" id="fecha" name="fecha" required>
+        <label>Descripción:</label>
+        <textarea id="descripcion" name="descripcion"></textarea>
 
-    <label>Hora:</label>
-    <input type="time" id="hora" name="hora" required>
+        <label>Fecha:</label>
+        <input type="date" id="fecha" name="fecha" required>
 
-    <label>Lugar:</label>
-    <input type="text" id="lugar" name="lugar" required>
+        <label>Hora:</label>
+        <input type="time" id="hora" name="hora" required>
 
-    <label>Capacidad máxima:</label>
-    <input type="number" id="aforo_max" name="aforo_max" min="1" required>
+        <label>Lugar:</label>
+        <input type="text" id="lugar" name="lugar" required>
 
+        <label>Capacidad máxima:</label>
+        <input type="number" id="aforo_max" name="aforo_max" min="1" required>
 
-<label>Sub-eventos</label>
-<div id="contenedor-secciones">
+        <label>Mapa (iframe o URL):</label>
+        <textarea id="mapa" name="mapa" placeholder="Pega aquí el iframe o enlace del mapa"></textarea>
 
-</div>
+        <label>Sub-eventos:</label>
+        <div id="contenedor-secciones"></div>
+        <button type="button" id="agg_sub" onclick="agregarSeccion()">➕ Agregar un sub-evento</button>
 
-<button type="button" id="agg_sub"onclick="agregarSeccion()">➕ Agregar un "Sub-evento"</button>
-
-<script>
-// ...existing code...
-function agregarSeccion() {
-  const div = document.createElement('div');
-  div.classList.add('seccion-item');
-  div.innerHTML = `
-    <label>Nombre:</label>
-    <input type="text" name="seccion_nombre[]" required>
-    <label>Hora inicio:</label>
-    <input type="time" name="hora_inicio[]" required>
-    <button type="button" onclick="eliminarSeccion(this)">Eliminar</button>
-  `;
-  document.getElementById('contenedor-secciones').appendChild(div);
-  // Espera un momento y agrega la clase visible para activar la transición
-  setTimeout(() => div.classList.add('visible'), 10);
-}
-// ...existing code...
-
-function eliminarSeccion(btn) {
-  btn.parentElement.remove();
-}
-</script>
-
-    <br><br>
-    <button type="submit" name="crear">Crear evento</button>
-</form>
-
-
-    <br>
-    
+        <br><br>
+        <button type="submit" name="crear">Crear evento</button>
+    </form>
 
     <script>
-        window.onload = function() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('date').setAttribute('min', today);
-        };
+    // Sub-eventos dinámicos
+    function agregarSeccion() {
+        const div = document.createElement('div');
+        div.classList.add('seccion-item');
+        div.innerHTML = `
+            <label>Nombre:</label>
+            <input type="text" name="seccion_nombre[]" required>
+            <label>Hora inicio:</label>
+            <input type="time" name="hora_inicio[]" required>
+            <button type="button" onclick="eliminarSeccion(this)">Eliminar</button>
+        `;
+        document.getElementById('contenedor-secciones').appendChild(div);
+        setTimeout(() => div.classList.add('visible'), 10);
+    }
+
+    function eliminarSeccion(btn) {
+        btn.parentElement.remove();
+    }
+
+    // Fecha mínima
+    window.onload = function() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('fecha').setAttribute('min', today);
+    };
     </script>
 </body>
 </html>

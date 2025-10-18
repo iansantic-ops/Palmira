@@ -3,7 +3,7 @@ session_start();
 
 // Bloquear acceso si no hay sesión activa
 if (!isset($_SESSION['idAdmin'])) {
-    header("Location: ../index.php.php");
+    header("Location: ../index.php");
     exit();
 }
 
@@ -35,13 +35,13 @@ if (isset($_POST['actualizar'])) {
     $hora           = $_POST['hora'];
     $lugar          = htmlspecialchars(trim($_POST['lugar']), ENT_QUOTES, 'UTF-8');
     $aforo_max      = intval($_POST['aforo_max']);
+    $mapa           = !empty($_POST['mapa']) ? trim($_POST['mapa']) : null;
 
-    $actualizado = $eventosObj->actualizarEvento($idEvento, $nombre_evento, $descripcion, $fecha, $hora, $lugar, $aforo_max);
+    $actualizado = $eventosObj->actualizarEvento($idEvento, $nombre_evento, $descripcion, $fecha, $hora, $lugar, $aforo_max, $mapa);
 
     if ($actualizado === true) {
-         echo "<script>alert('Evento editado exitosamente'); window.location='eventos_admin.php';</script>";
+        echo "<script>alert('Evento editado exitosamente'); window.location='eventos_admin.php';</script>";
         exit();
-        $evento = $eventosObj->leerEventoPorId($idEvento);
     } else {
         $mensaje = "Error al actualizar el evento. Intenta de nuevo.";
     }
@@ -51,37 +51,30 @@ if (isset($_POST['actualizar'])) {
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Evento</title>
-    <link rel="stylesheet" href="../../assets/css/eventos.css">
-    <script src="../../assets/js/validacion_evento.js"></script>
-</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editar Evento</title>
+<link rel="stylesheet" href="../../assets/css/eventos.css">
+<script src="../../assets/js/validacion_evento.js"></script>
 <style>
-input.valid, textarea.valid {
-  border: 2px solid green;
-  background: #e8f5e9;
-}
-
-input.invalid, textarea.invalid {
-  border: 2px solid red;
-  background: #ffebee;
-}
+input.valid, textarea.valid { border: 2px solid green; background: #e8f5e9; }
+input.invalid, textarea.invalid { border: 2px solid red; background: #ffebee; }
 </style>
+</head>
 <body>
-    <header>
-     
+<header>
     <h2>Editar Evento</h2>
     <button class="regresar" onclick="window.history.back()">   
-            <span>Volver</span>
-        </button>
+        <span>Volver</span>
+    </button>
 </header>
-    <?php if ($mensaje): ?>
-        <p style="color:<?= strpos($mensaje,'')!==false ? 'green' : 'red' ?>;"><?= $mensaje ?></p>
-    <?php endif; ?>
 
-    <?php if ($evento): ?>
-    <form id="formEvento" action="" method="POST">
+<?php if ($mensaje): ?>
+    <p style="color:<?= strpos($mensaje,'')!==false ? 'green' : 'red' ?>;"><?= $mensaje ?></p>
+<?php endif; ?>
+
+<?php if ($evento): ?>
+<form id="formEvento" action="" method="POST">
     <label>Nombre del evento:</label>
     <input type="text" id="nombre_evento" name="nombre_evento" 
         value="<?= htmlspecialchars($evento['nombre'], ENT_QUOTES, 'UTF-8'); ?>" required>
@@ -105,12 +98,15 @@ input.invalid, textarea.invalid {
     <input type="number" id="aforo_max" name="aforo_max" min="1" 
         value="<?= htmlspecialchars($evento['aforo_max'], ENT_QUOTES, 'UTF-8'); ?>" required>
 
+    <label>Mapa (iframe o URL):</label>
+    <textarea id="mapa" name="mapa" placeholder="Pega aquí el iframe o URL del mapa"><?= htmlspecialchars($evento['mapa'] ?? '', ENT_QUOTES, 'UTF-8'); ?></textarea>
+
     <br><br>
     <button type="submit" name="actualizar">Actualizar evento</button>
 </form>
-    <?php else: ?>
-        <p>Evento no encontrado.</p>
-    <?php endif; ?>
+<?php else: ?>
+    <p>Evento no encontrado.</p>
+<?php endif; ?>
 
 </body>
 </html>

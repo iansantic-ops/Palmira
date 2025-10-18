@@ -69,7 +69,11 @@ if (isset($_POST['inscribir'])) {
             padding: 0;
         }
 
-        .iconoT1 { width: 20px; height: 20px; object-fit: contain; }
+        .iconoT1 {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+        }
 
         .search-bar {
             text-align: center;
@@ -106,6 +110,7 @@ if (isset($_POST['inscribir'])) {
         }
 
         .form-secciones {
+            display: none; /* Oculto por defecto */
             margin-top: 10px;
             background: #f9f9f9;
             border-radius: 10px;
@@ -198,44 +203,49 @@ if (isset($_POST['inscribir'])) {
             border-radius: 8px;
         }
 
+        .mapa-container {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .mapa-container iframe {
+            width: 100%;
+            height: 250px;
+            border-radius: 10px;
+            border: none;
+        }
+
         @media (max-width: 768px) {
             .titulo-fecha::before, .titulo-fecha::after {
                 width: 50px;
             }
         }
-        .form-secciones {
-    display: none; /* Oculto por defecto */
-}
+
+        /* Tooltip flotante */
         .tooltip-flotante {
-    position: absolute;
-    z-index: 9999;
-    display: none; /* Oculto por defecto */
-}
+            position: absolute;
+            z-index: 9999;
+            display: none;
+        }
 
-.tooltip-contenido {
-    background-color: #1D2A62;
-    color: #fff;
-    padding: 12px 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    font-size: 0.95rem;
-    position: relative;
-    max-width: 250px;
-}
+        .tooltip-contenido {
+            background-color: #1D2A62;
+            color: #fff;
+            padding: 12px 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            font-size: 0.95rem;
+            position: relative;
+            max-width: 250px;
+        }
 
-.tooltip-texto {
-    display: inline-block;
-}
-
-.tooltip-cerrar {
-    position: absolute;
-    top: 4px;
-    right: 8px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-
+        .tooltip-cerrar {
+            position: absolute;
+            top: 4px;
+            right: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -263,10 +273,10 @@ if (isset($_POST['inscribir'])) {
     <div class="eventos-grid">
         <?php foreach ($eventosDelDia as $evento): ?>
             <div class="evento-card">
-                <h3><?= htmlspecialchars($evento['nombre'], ENT_QUOTES, 'UTF-8'); ?></h3>
-                <p><?= htmlspecialchars($evento['descripcion'], ENT_QUOTES, 'UTF-8'); ?></p>
-                <p><strong>Hora:</strong> <?= htmlspecialchars($evento['hora'], ENT_QUOTES, 'UTF-8'); ?></p>
-                <p><strong>Lugar:</strong> <?= htmlspecialchars($evento['lugar'], ENT_QUOTES, 'UTF-8'); ?></p>
+                <h3><?= htmlspecialchars($evento['nombre']); ?></h3>
+                <p><?= htmlspecialchars($evento['descripcion']); ?></p>
+                <p><strong>Hora:</strong> <?= htmlspecialchars($evento['hora']); ?></p>
+                <p><strong>Lugar:</strong> <?= htmlspecialchars($evento['lugar']); ?></p>
 
                 <button class="btn-inscribir" type="button" data-evento="<?= $evento['idE']; ?>">Inscribirme</button>
 
@@ -287,6 +297,19 @@ if (isset($_POST['inscribir'])) {
                     <?php endif; ?>
                     <button type="submit" name="inscribir">Confirmar inscripción</button>
                 </form>
+
+                <?php if (!empty($evento['mapa'])): ?>
+                    <button class="btn-inscribir ver-mapa" type="button" data-id="<?= $evento['idE']; ?>">Ver mapa</button>
+                    <div id="mapa-<?= $evento['idE']; ?>" class="mapa-container">
+                        <?php
+                        if (str_contains($evento['mapa'], '<iframe')) {
+                            echo $evento['mapa'];
+                        } else {
+                            echo '<iframe src="' . htmlspecialchars($evento['mapa']) . '" allowfullscreen loading="lazy"></iframe>';
+                        }
+                        ?>
+                    </div>
+                <?php endif; ?>
             </div>
         <?php endforeach; ?>
     </div>
@@ -296,18 +319,25 @@ if (isset($_POST['inscribir'])) {
 document.querySelectorAll('.btn-inscribir').forEach(btn => {
     btn.addEventListener('click', () => {
         const form = btn.nextElementSibling;
-        form.style.display = form.style.display === 'block' ? 'none' : 'block';
+        if (form && form.classList.contains('form-secciones')) {
+            form.style.display = form.style.display === 'block' ? 'none' : 'block';
+        }
     });
 });
 
-function validarSeccion(form) {
-    const checkboxes = form.querySelectorAll('input[name="idSeccion[]"]');
-    if (checkboxes.length > 0 && !Array.from(checkboxes).some(cb => cb.checked)) {
-        alert("Selecciona al menos una sección.");
-        return false;
-    }
-    return true;
-}
+document.querySelectorAll('.ver-mapa').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        const mapa = document.getElementById(`mapa-${id}`);
+        if (mapa.style.display === 'none' || mapa.style.display === '') {
+            mapa.style.display = 'block';
+            btn.textContent = 'Ocultar mapa';
+        } else {
+            mapa.style.display = 'none';
+            btn.textContent = 'Ver mapa';
+        }
+    });
+});
 
 document.getElementById('buscarEvento')?.addEventListener('input', function () {
     const valor = this.value.toLowerCase();
@@ -316,12 +346,11 @@ document.getElementById('buscarEvento')?.addEventListener('input', function () {
         card.style.display = titulo.includes(valor) ? '' : 'none';
     });
 });
-</script>
-<script>
+
+// Tooltip flotante
 function mostrarTooltip() {
     const perfilBtn = document.querySelector('.btn a[href="perfil_usuario.php"]');
     const tooltip = document.getElementById('tooltipQR');
-
     if (!perfilBtn || !tooltip) return;
 
     const rect = perfilBtn.getBoundingClientRect();
@@ -331,11 +360,9 @@ function mostrarTooltip() {
 }
 
 function cerrarTooltip() {
-    const tooltip = document.getElementById('tooltipQR');
-    tooltip.style.display = 'none';
+    document.getElementById('tooltipQR').style.display = 'none';
 }
 
-// Mostrar el tooltip después de un pequeño retardo (ej: 3 segundos)
 window.addEventListener('load', () => {
     setTimeout(mostrarTooltip, 3000);
 });
@@ -343,7 +370,7 @@ window.addEventListener('load', () => {
 
 <div class="tooltip-flotante" id="tooltipQR">
     <div class="tooltip-contenido">
-        <span class="tooltip-texto">Descarga tu QR al terminar tu inscripción a los eventos</span>
+        <span>Descarga tu QR al terminar tu inscripción a los eventos</span>
         <span class="tooltip-cerrar" onclick="cerrarTooltip()">×</span>
     </div>
 </div>

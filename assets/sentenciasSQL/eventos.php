@@ -3,33 +3,33 @@
 
 class Eventos {
 
-    public function crearEvento($idEvento, $nombre, $descripcion, $fecha, $hora, $lugar, $aforoMax) {
-    include "Conexion.php";
-    $stmt = $pdo->prepare("
-        INSERT INTO eventos (idE, nombre, descripcion, fecha, hora, lugar, aforo_max)
-        VALUES (:idEvento, :nombre, :descripcion, :fecha, :hora, :lugar, :aforoMax)
-    ");
+    public function crearEvento($idEvento, $nombre, $descripcion, $fecha, $hora, $lugar, $aforoMax, $mapa = null) {
+        include "Conexion.php";
+        $stmt = $pdo->prepare("
+            INSERT INTO eventos (idE, nombre, descripcion, fecha, hora, lugar, aforo_max, mapa)
+            VALUES (:idEvento, :nombre, :descripcion, :fecha, :hora, :lugar, :aforoMax, :mapa)
+        ");
 
-    try {
-        $alta = $stmt->execute([
-            ':idEvento'   => $idEvento,
-            ':nombre'     => $nombre,
-            ':descripcion'=> $descripcion,
-            ':fecha'      => $fecha,
-            ':hora'       => $hora,
-            ':lugar'      => $lugar,
-            ':aforoMax'   => $aforoMax
-        ]);
-        return $alta;
-    } catch (PDOException $e) {
-        if ($e->getCode() === "23000") {
-            // Clave duplicada (por idEvento u otra restricción)
-            return 'duplicado';
-        } else {
-            return false; // Otro error
+        try {
+            return $stmt->execute([
+                ':idEvento'   => $idEvento,
+                ':nombre'     => $nombre,
+                ':descripcion'=> $descripcion,
+                ':fecha'      => $fecha,
+                ':hora'       => $hora,
+                ':lugar'      => $lugar,
+                ':aforoMax'   => $aforoMax,
+                ':mapa'       => $mapa
+            ]);
+        } catch (PDOException $e) {
+            if ($e->getCode() === "23000") {
+                return 'duplicado';
+            } else {
+                return false;
+            }
         }
     }
-}
+
 
 
    public function leerEventos() {
@@ -129,7 +129,7 @@ public function leerEventoPorId($idEvento) {
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-public function actualizarEvento($idEvento, $nombre, $descripcion, $fecha, $hora, $lugar, $aforoMax) {
+public function actualizarEvento($idEvento, $nombre, $descripcion, $fecha, $hora, $lugar, $aforoMax, $mapa = null) {
     include "Conexion.php";
     $stmt = $pdo->prepare("UPDATE eventos 
                            SET nombre = :nombre, 
@@ -137,18 +137,21 @@ public function actualizarEvento($idEvento, $nombre, $descripcion, $fecha, $hora
                                fecha = :fecha, 
                                hora = :hora, 
                                lugar = :lugar, 
-                               aforo_max = :aforoMax
+                               aforo_max = :aforoMax,
+                               mapa = :mapa
                            WHERE idE = :idEvento");
     return $stmt->execute([
-        ':nombre'     => $nombre,
-        ':descripcion'=> $descripcion,
-        ':fecha'      => $fecha,
-        ':hora'       => $hora,
-        ':lugar'      => $lugar,
-        ':aforoMax'   => $aforoMax,
-        ':idEvento'   => $idEvento
+        ':nombre'      => $nombre,
+        ':descripcion' => $descripcion,
+        ':fecha'       => $fecha,
+        ':hora'        => $hora,
+        ':lugar'       => $lugar,
+        ':aforoMax'    => $aforoMax,
+        ':mapa'        => $mapa,
+        ':idEvento'    => $idEvento
     ]);
 }
+
 
  public function eliminarEvento($idEvento) {
     include "Conexion.php";

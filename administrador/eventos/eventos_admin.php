@@ -27,141 +27,41 @@ $listaEventos = $eventos->leerEventos();
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Eventos</title>
-    <link rel="stylesheet" href="../../assets/css/admin.css">
-    <style>
-        :root {
-            --azul-oscuro: #0A1931;
-            --azul-medio: #4A7FA7;
-            --azul-intermedio: #1A3D63;
-            --azul-claro: #B3CFE5;
-            --verde-oscuro: #1b7f4d;
-        }
-
-        body {
-            font-family: "Poppins", sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f6f9fc;
-        }
-
-        header {
-            background: var(--azul-oscuro);
-            color: white;
-            padding: 15px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            text-align: center;
-            gap: 10px;
-        }
-
-        header h1 {
-            flex: 1 1 100%;
-            margin: 0;
-            font-size: 1.6rem;
-            text-align: center;
-        }
-
-        header a button {
-            background-color: var(--azul-medio);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 12px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        header a button:hover {
-            background-color: var(--verde-oscuro);
-            transform: scale(1.05);
-        }
-
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 25px;
-            padding: 25px;
-        }
-
-        .card {
-            background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            padding: 20px;
-            width: 300px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
-        }
-
-        .headerCardEventos {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-
-        .headerCardEventos button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            transition: transform 0.2s ease, filter 0.2s;
-        }
-
-        .headerCardEventos button:hover {
-            transform: scale(1.1);
-            filter: brightness(1.3);
-        }
-
-        .icono-AM {
-            width: 24px;
-            height: 24px;
-        }
-
-        .btn {
-            display: inline-block;
-            background-color: var(--azul-medio);
-            color: #fff;
-            text-decoration: none;
-            padding: 10px 15px;
-            border-radius: 8px;
-            transition: 0.3s;
-            margin-top: 15px;
-        }
-
-        .btn:hover {
-            background-color: var(--verde-oscuro);
-            transform: scale(1.05);
-        }
-
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-            }
-
-            .container {
-                padding: 10px;
-                gap: 15px;
-            }
-
-            .card {
-                width: 90%;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestión de Eventos</title>
+<link rel="stylesheet" href="../../assets/css/admin.css">
+<style>
+/* ==================== Estilos existentes ==================== */
+:root {
+    --azul-oscuro: #0A1931;
+    --azul-medio: #4A7FA7;
+    --azul-intermedio: #1A3D63;
+    --azul-claro: #B3CFE5;
+    --verde-oscuro: #1b7f4d;
+}
+body { font-family: "Poppins", sans-serif; margin:0; padding:0; background-color:#f6f9fc; }
+header { background: var(--azul-oscuro); color:white; padding:15px; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; }
+header h1 { flex:1 1 100%; margin:0; font-size:1.6rem; text-align:center; }
+header a button { background-color: var(--azul-medio); color:white; border:none; border-radius:8px; padding:8px 12px; cursor:pointer; transition:0.3s; }
+header a button:hover { background-color: var(--verde-oscuro); transform:scale(1.05); }
+.container { display:flex; flex-wrap:wrap; justify-content:center; gap:25px; padding:25px; }
+.card { background:#fff; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1); padding:20px; width:300px; text-align:center; display:flex; flex-direction:column; justify-content:space-between; transition: transform 0.2s ease, box-shadow 0.2s ease; position:relative; }
+.card:hover { transform:translateY(-5px); box-shadow:0 8px 15px rgba(0,0,0,0.15); }
+.headerCardEventos { display:flex; justify-content:center; gap:15px; margin-bottom:10px; }
+.headerCardEventos button { background:none; border:none; cursor:pointer; transition: transform 0.2s ease, filter 0.2s; }
+.headerCardEventos button:hover { transform:scale(1.1); filter:brightness(1.3); }
+.icono-AM { width:24px; height:24px; }
+.icono-AMT { width:20px; height:20px; }
+.btn { display:inline-block; background-color: var(--azul-medio); color:#fff; text-decoration:none; padding:10px 15px; border-radius:8px; transition:0.3s; margin-top:15px; }
+.btn:hover { background-color: var(--verde-oscuro); transform: scale(1.05); }
+/* ==================== Modal Mapa ==================== */
+#modalMapa { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:1000; }
+#modalContenido { background:white; border-radius:10px; max-width:90%; width:500px; padding:20px; position:relative; }
+#modalContenido iframe { width:100%; height:300px; border:none; border-radius:8px; }
+#cerrarModal { position:absolute; top:10px; right:10px; cursor:pointer; font-weight:bold; font-size:1.2rem; }
+@media (max-width:768px){ header { flex-direction:column; } .container { padding:10px; gap:15px; } .card { width:90%; } }
+</style>
 </head>
 <body>
 
@@ -175,7 +75,6 @@ $listaEventos = $eventos->leerEventos();
 </header>
 
 <div class="container">
-
 <?php if (!empty($listaEventos)): ?>
     <?php foreach ($listaEventos as $evento): ?>
         <div class="card">
@@ -192,17 +91,53 @@ $listaEventos = $eventos->leerEventos();
             </div>
 
             <h2><?= htmlspecialchars($evento['nombre']); ?></h2>
-            <p><strong>📅 Fecha:</strong> <?= htmlspecialchars($evento['fecha']); ?></p>
-            <p><strong>🕒 Hora:</strong> <?= htmlspecialchars($evento['hora']); ?></p>
-            <p><strong>📍 Lugar:</strong> <?= htmlspecialchars($evento['lugar']); ?></p>
+            <p><strong><img src="../../assets/img/calendario.png" class="icono-AMT" alt="Fecha"> Fecha:</strong> <?= htmlspecialchars($evento['fecha']); ?></p>
+            <p><strong><img src="../../assets/img/reloj.png" class="icono-AMT" alt="Hora"> Hora:</strong> <?= htmlspecialchars($evento['hora']); ?></p>
+            <p><strong><img src="../../assets/img/marcador.png" class="icono-AMT" alt="Lugar"> Lugar:</strong> <?= htmlspecialchars($evento['lugar']); ?></p>
+
+            <!-- Botón mostrar mapa -->
+            <?php if (!empty($evento['mapa'])): ?>
+                <button class="btn" onclick="abrirMapa('<?= htmlspecialchars($evento['mapa'], ENT_QUOTES); ?>')">Ver Mapa</button>
+            <?php endif; ?>
+
             <a class="btn" href="inscritos.php?idE=<?= $evento['idE']; ?>">Ver información</a>
         </div>
     <?php endforeach; ?>
 <?php else: ?>
     <p>No hay eventos registrados.</p>
 <?php endif; ?>
-
 </div>
+
+<!-- Modal del Mapa -->
+<div id="modalMapa">
+    <div id="modalContenido">
+        <span id="cerrarModal" onclick="cerrarMapa()">×</span>
+        <div id="iframeContainer"></div>
+    </div>
+</div>
+
+<script>
+function abrirMapa(contenido) {
+    const modal = document.getElementById('modalMapa');
+    const container = document.getElementById('iframeContainer');
+
+    // Si el contenido contiene <iframe>, insertar directamente
+    if (contenido.includes('<iframe')) {
+        container.innerHTML = contenido;
+    } else {
+        // Si es solo URL, mostrarlo en iframe
+        container.innerHTML = `<iframe src="${contenido}" allowfullscreen></iframe>`;
+    }
+    modal.style.display = 'flex';
+}
+
+function cerrarMapa() {
+    const modal = document.getElementById('modalMapa');
+    const container = document.getElementById('iframeContainer');
+    container.innerHTML = '';
+    modal.style.display = 'none';
+}
+</script>
 
 </body>
 </html>
