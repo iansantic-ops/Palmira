@@ -370,7 +370,7 @@ window.addEventListener('load', () => {
 
 <div class="tooltip-flotante" id="tooltipQR">
     <div class="tooltip-contenido">
-        <span>Descarga tu QR al terminar tu inscripción a los eventos</span>
+        <span>Descarga tu QR que esta en tu perfil al terminar tu inscripción a los eventos</span>
         <span class="tooltip-cerrar" onclick="cerrarTooltip()">×</span>
     </div>
 </div>

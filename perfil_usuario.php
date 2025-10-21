@@ -133,7 +133,14 @@ if(isset($_POST['eliminar']) && isset($_POST['idE'])) {
             <tr>
                 <td data-label="Nombre"><?= htmlspecialchars($evento['nombre'], ENT_QUOTES, 'UTF-8'); ?></td>
                 <td data-label="Fecha"><?= htmlspecialchars($evento['fecha'], ENT_QUOTES, 'UTF-8'); ?></td>
-                <td data-label="Hora"><?= htmlspecialchars($evento['hora'], ENT_QUOTES, 'UTF-8'); ?></td>
+<td data-label="Hora">
+    <?php if (!empty($evento['hora_inicio'])): ?>
+        <?= htmlspecialchars($evento['hora_inicio'], ENT_QUOTES, 'UTF-8'); ?> - 
+        
+    <?php else: ?>
+        <?= htmlspecialchars($evento['hora'], ENT_QUOTES, 'UTF-8'); ?>
+    <?php endif; ?>
+</td>
                 <td data-label="Lugar"><?= htmlspecialchars($evento['lugar'], ENT_QUOTES, 'UTF-8'); ?></td>
                 <td><?= htmlspecialchars($evento['seccion'] ?: 'General' );?></td>
                 <td data-label="Acción">

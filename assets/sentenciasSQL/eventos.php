@@ -97,29 +97,26 @@ class Eventos {
         $stmt->execute([':idEvento' => $idEvento]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    public function leerEventosUsuario($idR) {
+   public function leerEventosUsuario($idUsuario) {
     include "conexion.php";
-
-    $stmt = $pdo->prepare("
-        SELECT 
-            e.idE,
-            e.nombre AS nombre,
-            e.fecha AS fecha,
-            e.hora AS hora,
-            e.lugar AS lugar,
-            s.nombre_seccion AS seccion,
-            s.hora_inicio,
-            i.fecha_inscripcion
-        FROM inscripciones i
-        JOIN eventos e ON i.idE = e.idE
-        LEFT JOIN secciones_evento s ON i.idSeccion = s.idSeccion
-        WHERE i.idR = :idUsuario
-        ORDER BY e.fecha, s.hora_inicio
-    ");
-    $stmt->execute([':idUsuario' => $idR]);
-    $inscripciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    return $inscripciones ?: [];
+    $sql = "SELECT 
+                e.idE,
+                e.nombre,
+                e.fecha,
+                e.hora,
+                e.lugar,
+                s.nombre_seccion AS seccion,
+                s.hora_inicio AS hora_inicio
+            FROM inscripciones i
+            INNER JOIN eventos e ON i.idE = e.idE
+            LEFT JOIN secciones_evento s ON i.idSeccion = s.idSeccion
+            WHERE i.idR = :idUsuario";
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':idUsuario' => $idUsuario]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
 
 
 public function leerEventoPorId($idEvento) {
