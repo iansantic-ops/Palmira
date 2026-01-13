@@ -1,9 +1,13 @@
 <?php
 session_start();
-if (!isset($_SESSION['idUsuario'])) {
-    header("Location:index.php");
+
+if (!isset($_SESSION['USER'])) {
+    header("Location: index.php");
     exit();
 }
+
+$usuario = $_SESSION['USER'];
+
 require_once "./assets/sentenciasSQL/conexion.php";
 
 try {

@@ -1,9 +1,17 @@
+
 <?php
 session_start();
-if (!isset($_SESSION['idUsuario'])) {
+
+/* =====================
+   VALIDAR SESIÓN DE USUARIO
+===================== */
+if (!isset($_SESSION['USER'])) {
     header("Location:index.php");
     exit();
 }
+
+/* 🔹 SOLO CAMBIO: obtener id desde USER */
+$idUsuario = $_SESSION['USER']['id'];
 
 include_once("assets/sentenciasSQL/eventos.php");
 include_once("assets/sentenciasSQL/secciones.php");
@@ -11,24 +19,31 @@ include_once("assets/sentenciasSQL/secciones.php");
 $leer_eventos = new Eventos();
 $seccionesModel = new Secciones();
 
-// Obtener eventos
+/* =====================
+   OBTENER EVENTOS
+===================== */
 $eventos = $leer_eventos->leerEventos();
 if (!is_array($eventos)) {
     $eventos = [];
 }
 
-// Agrupar eventos por fecha
+/* =====================
+   AGRUPAR EVENTOS POR FECHA
+===================== */
 $eventosPorFecha = [];
 foreach ($eventos as $evento) {
     $fecha = $evento['fecha'];
     $eventosPorFecha[$fecha][] = $evento;
 }
 
-// Manejar inscripción
+/* =====================
+   INSCRIPCIÓN
+===================== */
 $mensaje = "";
 if (isset($_POST['inscribir'])) {
+
     $idE = filter_input(INPUT_POST, 'idE', FILTER_VALIDATE_INT);
-    $idR = filter_input(INPUT_POST, 'idR', FILTER_VALIDATE_INT);
+    $idR = $idUsuario; // 🔹 SOLO CAMBIO
     $idSecciones = isset($_POST['idSeccion']) ? $_POST['idSeccion'] : [];
 
     $inscribir = false;
@@ -282,7 +297,8 @@ if (isset($_POST['inscribir'])) {
 
                 <form method="POST" class="form-secciones">
                     <input type="hidden" name="idE" value="<?= (int)$evento['idE']; ?>">
-                    <input type="hidden" name="idR" value="<?= (int)$_SESSION['idUsuario']; ?>">
+                    <!-- 🔹 SOLO CAMBIO: ya no se manda idUsuario por POST -->
+
                     <?php
                     $secciones = $seccionesModel->obtenerSeccionesPorEvento($evento['idE']);
                     if (!empty($secciones)):
@@ -295,6 +311,7 @@ if (isset($_POST['inscribir'])) {
                     else: ?>
                         <p>Evento general (sin sub-secciones).</p>
                     <?php endif; ?>
+
                     <button type="submit" name="inscribir">Confirmar inscripción</button>
                 </form>
 
@@ -314,6 +331,7 @@ if (isset($_POST['inscribir'])) {
         <?php endforeach; ?>
     </div>
 <?php endforeach; ?>
+
 
 <script>
 document.querySelectorAll('.btn-inscribir').forEach(btn => {
@@ -375,5 +393,7 @@ window.addEventListener('load', () => {
     </div>
 </div>
 
+</body>
+</html>
 </body>
 </html>

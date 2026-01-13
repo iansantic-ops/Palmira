@@ -1,13 +1,14 @@
 <?php
 session_start();
-if (!isset($_SESSION['idUsuario'])) {
+
+if (!isset($_SESSION['USER']['id'])) {
     header("Location:index.php");
     exit();
 }
 
 require_once __DIR__ . "/assets/sentenciasSQL/usuarios.php"; 
 
-$idUsuario = $_SESSION['idUsuario'];
+$idUsuario = $_SESSION['USER']['id'];
 $usuariosObj = new Usuarios();
 $usuario = $usuariosObj->buscarUsuarioPorId($idUsuario);
 
@@ -20,18 +21,32 @@ if (isset($_POST['modificar'])) {
     $origen    = htmlspecialchars(trim($_POST['origen']), ENT_QUOTES, 'UTF-8');
     $pais      = htmlspecialchars(trim($_POST['pais']), ENT_QUOTES, 'UTF-8');
 
-    $actualizado = $usuariosObj->modificarUsuario($idUsuario, $nombre, $apellidos, $telefono, $correo, $origen, $pais);
+    $actualizado = $usuariosObj->modificarUsuario(
+        $idUsuario,
+        $nombre,
+        $apellidos,
+        $telefono,
+        $correo,
+        $origen,
+        $pais
+    );
+
     if ($actualizado) {
         $mensaje = "Datos actualizados correctamente.";
-        $_SESSION['nombre'] = $nombre;
-        $_SESSION['correo'] = $correo;
+
+        // 🔐 actualizar sesión SOLO del usuario
+        $_SESSION['USER']['nombre'] = $nombre;
+        $_SESSION['USER']['correo'] = $correo;
+
         $usuario = $usuariosObj->buscarUsuarioPorId($idUsuario);
     } else {
         $mensaje = "Error al actualizar los datos.";
     }
 }
+
 $paisSeleccionado = $usuario['pais'];
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>

@@ -1,9 +1,11 @@
 <?php
 session_start();
-if (isset($_SESSION['idUsuario'])) {
-     header("location:eventos_disponibles.php");
+
+if (isset($_SESSION['USER']['id'])) {
+    header("location:eventos_disponibles.php");
     exit();
 }
+
 require_once "assets/sentenciasSQL/usuarios.php";
 
 if (isset($_POST['registrar'])) {
@@ -15,20 +17,21 @@ if (isset($_POST['registrar'])) {
         $lada      = htmlspecialchars(trim($_POST['lada']), ENT_QUOTES, 'UTF-8');
         $telefono  = htmlspecialchars(trim($_POST['telefono']), ENT_QUOTES, 'UTF-8');
         $correo    = filter_input(INPUT_POST, 'correo', FILTER_VALIDATE_EMAIL);
+
         $medio = $_POST['medio'];
         if ($medio === "OTRO" && !empty($_POST['otro_medio'])) {
-            $medio = $_POST['otro_medio']; // guardar lo que escribió el usuario
+            $medio = $_POST['otro_medio'];
         }
-        
-        $origen    = htmlspecialchars(trim($_POST['origen']), ENT_QUOTES, 'UTF-8');
-        $pais      = htmlspecialchars(trim($_POST['pais']), ENT_QUOTES, 'UTF-8');
+
+        $origen = htmlspecialchars(trim($_POST['origen']), ENT_QUOTES, 'UTF-8');
+        $pais   = htmlspecialchars(trim($_POST['pais']), ENT_QUOTES, 'UTF-8');
 
         $registro = new Usuarios();
 
-        //verifica si ya existe un usuario con los mismos atos 
         $usuarioExistente = $registro->buscarUsuarioRegistrado($correo, $lada, $telefono);
 
         if ($usuarioExistente) {
+
             echo <<<HTML
 <div id="qrModal" class="modal">
   <div class="modal-content">
@@ -44,19 +47,20 @@ if (isset($_POST['registrar'])) {
 HTML;
 
         } else {
-            //movi esto a un else
+
             $idUsuario = random_int(10000000, 99999999);
             $registrarUsu = $registro->darAlta($idUsuario, $nombre, $apellidos, $lada, $telefono, $correo, $medio, $origen, $pais);
 
             if($registrarUsu === true) {
-                if (session_status() !== PHP_SESSION_ACTIVE) session_start();
 
-                $_SESSION['idUsuario'] = $idUsuario;
-                $_SESSION['nombre']    = $nombre;
-                $_SESSION['correo']    = $correo;
-                $_SESSION['telefono']  = $telefono;
+                // 🔐 SESIÓN AISLADA DE USUARIO
+                $_SESSION['USER'] = [
+                    'id'       => $idUsuario,
+                    'nombre'   => $nombre,
+                    'correo'   => $correo,
+                    'telefono' => $telefono
+                ];
 
-                
                 echo <<<HTML
 <div id="successModal" class="modal">
   <div class="modal-content">
@@ -72,8 +76,9 @@ HTML;
   }, 4000);
 </script>
 HTML;
+
             } else {
-//error del registro Bv
+
                 echo <<<HTML
 <div id="qrModal" class="modal">
   <div class="modal-content">
@@ -92,6 +97,7 @@ HTML;
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

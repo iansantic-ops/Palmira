@@ -1,59 +1,78 @@
 <?php
 session_start();
-if (isset($_SESSION['idUsuario'])) {
-     header("location:eventos_disponibles.php");
+
+/* =====================
+   SI YA HAY USUARIO LOGUEADO
+===================== */
+if (isset($_SESSION['USER'])) {
+    header("Location: eventos_disponibles.php");
     exit();
 }
 
+/* =====================
+   OBTENER IMAGEN DEL ANUNCIO
+===================== */
 require_once "assets/sentenciasSQL/conexion.php";
-$sql = "SELECT imagen_anuncio FROM configuracion WHERE id=1";
+
+$sql = "SELECT imagen_anuncio FROM configuracion WHERE id = 1";
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $anuncio = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($anuncio && !empty($anuncio['imagen_anuncio'])) {
-    $imagenAnuncio = $anuncio['imagen_anuncio']; 
-} else {
-    $imagenAnuncio = "assets/img/default.jpg"; 
-}
-?>
+$imagenAnuncio = (!empty($anuncio['imagen_anuncio']))
+    ? $anuncio['imagen_anuncio']
+    : "assets/img/default.jpg";
 
-
-<?php
+/* =====================
+   LOGIN USUARIO
+===================== */
 require_once "assets/sentenciasSQL/usuarios.php";
 
-if (isset($_POST['iniciar'])) {
-    if (!empty($_POST['nombre']) && !empty($_POST['correo']) && !empty($_POST['lada']) && !empty($_POST['telefono'])) {
+$error = '';
 
-    // Sanitizar datos
+if (isset($_POST['iniciar'])) {
+
+    if (
+        !empty($_POST['nombre']) &&
+        !empty($_POST['correo']) &&
+        !empty($_POST['lada']) &&
+        !empty($_POST['telefono'])
+    ) {
+
         $nombre   = htmlspecialchars(trim($_POST['nombre']), ENT_QUOTES, 'UTF-8');
         $correo   = filter_input(INPUT_POST, 'correo', FILTER_VALIDATE_EMAIL);
         $lada     = htmlspecialchars(trim($_POST['lada']), ENT_QUOTES, 'UTF-8');
         $telefono = htmlspecialchars(trim($_POST['telefono']), ENT_QUOTES, 'UTF-8');
 
         if ($correo) {
+
             $registro = new Usuarios();
             $usuarioExistente = $registro->buscarUsuarioRegistrado($correo, $lada, $telefono);
 
             if ($usuarioExistente) {
-               
-                if (session_status() !== PHP_SESSION_ACTIVE) {
-                    session_start();
-                }
-                $_SESSION['idUsuario'] = $usuarioExistente['idR'];
-                $_SESSION['nombre']    = $nombre;
-                $_SESSION['correo']    = $correo;
-                $_SESSION['telefono']  = $telefono;
+
+                // 🔐 Regenerar sesión por seguridad
+                session_regenerate_id(true);
+
+                // ✅ SESIÓN DE USUARIO (AISLADA)
+                $_SESSION['USER'] = [
+                    'id'       => $usuarioExistente['idR'],
+                    'nombre'   => $nombre,
+                    'correo'   => $correo,
+                    'telefono' => $telefono
+                ];
 
                 header("Location: eventos_disponibles.php");
                 exit();
+
             } else {
-                
                 $error = "Usuario no encontrado. Verifica tus datos.";
             }
+
         } else {
             $error = "Correo inválido.";
         }
+
     } else {
         $error = "Todos los campos son obligatorios.";
     }
@@ -63,41 +82,46 @@ if (isset($_POST['iniciar'])) {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    
-    <link rel="stylesheet" href="./assets/css/formularios.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar sesión</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/css/formularios.css">
 </head>
 <body>
-    <div class="overlay" id="anuncio">
-  <div class="AnuncioPalmira">
-    <span class="tache" id="tache">&times;</span>
-    <img src="<?= $imagenAnuncio ?>" alt="Anuncio">
-  </div>
-</div> 
 
-    <div class="wrapper">        
-        <form action="index.php" method="post">
-            <center> <img src="./assets/img/usuario.png" alt="Icono PNG" class="icono-usuario"> </center>
+<!-- =====================
+     ANUNCIO
+===================== -->
+<div class="overlay" id="anuncio">
+    <div class="AnuncioPalmira">
+        <span class="tache" id="tache">&times;</span>
+        <img src="<?= $imagenAnuncio ?>" alt="Anuncio">
+    </div>
+</div>
 
-            <?php if (!empty($error)): ?>
-                <p style="color:red; text-align:center;"><?= $error ?></p>
-            <?php endif; ?>
+<div class="wrapper">
+    <form action="index.php" method="post">
 
-            <div class="input-box">
-                <label for="nombre">Nombre(s):</label>
-                <input type="text" name="nombre" id="nombre" required>
-            </div>
-            
-            <div class="input-box">
-                <label for="correo">Correo electrónico:</label>
-                <input type="email" name="correo" id="correo" required>
-            </div>
-            
-            <div class="##">
-    <label for="telefono">Número Whatsapp:</label>
-    <div class="numero">
-    <select name="lada" id="lada" required>
+        <center>
+            <img src="./assets/img/usuario.png" class="icono-usuario" alt="Usuario">
+        </center>
+
+        <?php if (!empty($error)): ?>
+            <p style="color:red; text-align:center;"><?= $error ?></p>
+        <?php endif; ?>
+
+        <div class="input-box">
+            <label>Nombre(s):</label>
+            <input type="text" name="nombre" required>
+        </div>
+
+        <div class="input-box">
+            <label>Correo electrónico:</label>
+            <input type="email" name="correo" required>
+        </div>
+
+        <label>Número WhatsApp:</label>
+        <div class="numero">
+            <select name="lada" id="lada" required>
     <!-- América del Norte y Caribe -->
     <option value="+52">+52 (México)</option>
     <option value="+1">+1 (Estados Unidos / Canadá)</option>
@@ -276,37 +300,39 @@ if (isset($_POST['iniciar'])) {
     <option value="+248">+248 (Seychelles)</option>
     <option value="+290">+290 (Santa Elena)</option>
 </select>
-           <input type="number" name="telefono" id="telefono" value="<?= isset($telefono) ? $telefono : '' ?>" required>
-       </div>
+
+            <input type="number" name="telefono" required>
+        </div>
+
+        <br>
+
+        <button type="submit" name="iniciar" class="btn">
+            Iniciar sesión
+        </button>
+
+        <br><br>
+        ¿No tienes cuenta? <a href="registro.php">Registrarse</a>
+
+    </form>
 </div>
 
-            <br>
-            <div class="button-group">
-                <button type="submit" id="enviar" name="iniciar" value="guardar" class="btn">Iniciar sesión</button>
-            </div>
-            <br>
+<script>
+window.onload = () => {
+    document.getElementById("anuncio").classList.add("mostrar");
+};
+document.getElementById("tache").onclick = () => {
+    document.getElementById("anuncio").classList.remove("mostrar");
+};
+</script>
 
-            ¿No tienes cuenta? <a href="registro.php">Registrarse</a>
-        </form>
-    </div> 
-    <script>
-        //muestra la imagen del anunciooooo Bv
-        window.onload = function() {
-          document.getElementById("anuncio").classList.add("mostrar");
-        };
+<script>
+if (window.history && history.pushState) {
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+        window.location.replace('index.php');
+    };
+}
+</script>
 
-        //la cierra al presionar el tache
-        document.getElementById("tache").onclick = function() {
-          document.getElementById("anuncio").classList.remove("mostrar");
-        };
-    </script>
-    <script>
-    if (window.history && history.pushState) {
-        history.pushState(null, null, location.href);
-        window.onpopstate = function () {
-            window.location.replace('index.php');
-        };
-    }
-    </script>
 </body>
 </html>
