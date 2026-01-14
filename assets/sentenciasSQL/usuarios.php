@@ -64,10 +64,17 @@ class Usuarios{
             ':idR'       => $idR
         ]);
     }
-    public function eliminarEvento($idR,$idE) {
+    public function eliminarEvento($idR, $idE, $idSeccion = null) {
         include "Conexion.php";
-        $stmt = $pdo->prepare("DELETE FROM inscripciones WHERE idR = :idR AND idE = :idE;");
-        $eliminar=$stmt->execute([':idR' => $idR, ':idE' => $idE]);
+        if ($idSeccion === null || $idSeccion === '') {
+            // Eliminar todas las inscripciones del usuario para ese evento
+            $stmt = $pdo->prepare("DELETE FROM inscripciones WHERE idR = :idR AND idE = :idE;");
+            $eliminar = $stmt->execute([':idR' => $idR, ':idE' => $idE]);
+        } else {
+            // Eliminar solo la inscripción de la sección específica
+            $stmt = $pdo->prepare("DELETE FROM inscripciones WHERE idR = :idR AND idE = :idE AND idSeccion = :idSeccion LIMIT 1;");
+            $eliminar = $stmt->execute([':idR' => $idR, ':idE' => $idE, ':idSeccion' => $idSeccion]);
+        }
         return $eliminar;
     }
     public function asistencia($idR, $idE, $idS = null) {

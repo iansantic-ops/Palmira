@@ -54,8 +54,26 @@ class Eventos {
     public function inscribirUsuario($idE, $idR, $idSeccion = null) {
     try {
         include "conexion.php";
+        // 1) Obtener fecha y hora del evento/ sección a la que se intenta inscribir
+        if ($idSeccion) {
+            $stmt = $pdo->prepare("SELECT s.hora_inicio AS hora_reg, e.fecha AS fecha_reg FROM secciones_evento s JOIN eventos e ON s.idE = e.idE WHERE s.idSeccion = :idSeccion LIMIT 1");
+            $stmt->execute([':idSeccion' => $idSeccion]);
+            $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!$fila) return 'error';
+            $hora_reg = $fila['hora_reg'];
+            $fecha_reg = $fila['fecha_reg'];
+        } else {
+            $stmt = $pdo->prepare("SELECT hora AS hora_reg, fecha AS fecha_reg FROM eventos WHERE idE = :idE LIMIT 1");
+            $stmt->execute([':idE' => $idE]);
+            $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!$fila) return 'error';
+            $hora_reg = $fila['hora_reg'];
+            $fecha_reg = $fila['fecha_reg'];
+        }
 
-        // Validar si ya está inscrito en esa misma sección
+        // 2) Validar si ya está inscrito (primero):
+        //    - Si se intenta inscribir a una sección: comprobar inscripción en la misma sección -> devolver 'duplicado_modulo'
+        //    - Si se intenta inscribir al evento general (idSeccion IS NULL): comprobar inscripción general -> devolver 'duplicado_evento'
         $sqlCheck = "SELECT * FROM inscripciones WHERE idR = :idR AND idE = :idE AND idSeccion " . 
                     ($idSeccion ? "= :idSeccion" : "IS NULL");
         $stmt = $pdo->prepare($sqlCheck);
@@ -65,9 +83,28 @@ class Eventos {
         $stmt->execute();
 
         if ($stmt->rowCount() > 0) {
-            return 'duplicado';
+            return $idSeccion ? 'duplicado_modulo' : 'duplicado_evento';
         }
-        // Insertar inscripción
+
+        // 3) Verificar conflicto de horario SOLO para secciones (submódulos)
+        //    Regla: si se intenta inscribir a una sección, bloquear si ya existe
+        //    otra inscripción del mismo usuario en cualquier OTRA sección (de cualquier evento)
+        //    que ocurra en la misma fecha y misma hora_inicio.
+        if ($idSeccion) {
+            $sqlConflict = "SELECT i.* FROM inscripciones i 
+                            JOIN eventos e ON i.idE = e.idE 
+                            JOIN secciones_evento s ON i.idSeccion = s.idSeccion 
+                            WHERE i.idR = :idR AND e.fecha = :fecha_reg AND s.hora_inicio = :hora_reg
+                              AND (i.idSeccion IS NULL OR i.idSeccion <> :idSeccion)
+                            LIMIT 1";
+            $stmt = $pdo->prepare($sqlConflict);
+            $stmt->execute([':idR' => $idR, ':fecha_reg' => $fecha_reg, ':hora_reg' => $hora_reg, ':idSeccion' => $idSeccion]);
+            if ($stmt->rowCount() > 0) {
+                return 'conflicto_horario';
+            }
+        }
+
+        // 4) Insertar inscripción
         $sqlInsert = "INSERT INTO inscripciones (idI, idR, idE, idSeccion, fecha_inscripcion, asistio)
                       VALUES (:idI, :idR, :idE, :idSeccion, NOW(), 0)";
         $stmt = $pdo->prepare($sqlInsert);
@@ -75,7 +112,12 @@ class Eventos {
         $stmt->bindParam(':idI', $idI);
         $stmt->bindParam(':idR', $idR);
         $stmt->bindParam(':idE', $idE);
-        $stmt->bindParam(':idSeccion', $idSeccion);
+        // Si idSeccion es null, hay que pasar explicitamente null para evitar errores
+        if ($idSeccion === null) {
+            $stmt->bindValue(':idSeccion', null, PDO::PARAM_NULL);
+        } else {
+            $stmt->bindParam(':idSeccion', $idSeccion);
+        }
         $stmt->execute();
 
         return 'true';
@@ -106,7 +148,8 @@ class Eventos {
                 e.hora,
                 e.lugar,
                 s.nombre_seccion AS seccion,
-                s.hora_inicio AS hora_inicio
+                s.hora_inicio AS hora_inicio,
+                i.idSeccion AS idSeccion
             FROM inscripciones i
             INNER JOIN eventos e ON i.idE = e.idE
             LEFT JOIN secciones_evento s ON i.idSeccion = s.idSeccion
@@ -236,6 +279,51 @@ public function estadisticasEventoPorSeccion($idE, $idSeccion) {
     $stmt->execute([':idE' => $idE, ':idSeccion' => $idSeccion]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
+
+
+    /**
+     * Elimina todos los eventos cuya fecha sea anterior a hoy.
+     * Borra también inscripciones y secciones asociadas dentro de una transacción.
+     * Devuelve true si se borraron (o no había nada que borrar), false en error, o 0 si no había eventos pasados.
+     */
+    public function eliminarEventosPasados() {
+        include "Conexion.php";
+        try {
+            $hoy = date('Y-m-d');
+            // Obtener ids de eventos pasados
+            $stmt = $pdo->prepare("SELECT idE FROM eventos WHERE fecha < :hoy");
+            $stmt->execute([':hoy' => $hoy]);
+            $ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+            if (empty($ids)) {
+                return 0; // nada que eliminar
+            }
+
+            // Preparar placeholders
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+            $pdo->beginTransaction();
+
+            // Eliminar inscripciones relacionadas
+            $stmt = $pdo->prepare("DELETE FROM inscripciones WHERE idE IN ($placeholders)");
+            $stmt->execute($ids);
+
+            // Eliminar secciones relacionadas
+            $stmt = $pdo->prepare("DELETE FROM secciones_evento WHERE idE IN ($placeholders)");
+            $stmt->execute($ids);
+
+            // Eliminar eventos
+            $stmt = $pdo->prepare("DELETE FROM eventos WHERE idE IN ($placeholders)");
+            $stmt->execute($ids);
+
+            $pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            if ($pdo->inTransaction()) $pdo->rollBack();
+            error_log('Error al eliminar eventos pasados: ' . $e->getMessage());
+            return false;
+        }
+    }
 
 
 

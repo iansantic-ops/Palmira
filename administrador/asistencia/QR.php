@@ -12,7 +12,12 @@ require_once "../../assets/sentenciasSQL/eventos.php";
 
 $Usuarios = new Usuarios();
 $Eventos = new Eventos();
-$leerEventos = $Eventos->leerEventos();
+$allEventos = $Eventos->leerEventos();
+// Mostrar sólo eventos próximos (fecha >= hoy)
+$hoy = date('Y-m-d');
+$leerEventos = array_values(array_filter($allEventos, function($ev) use ($hoy) {
+    return isset($ev['fecha']) && $ev['fecha'] >= $hoy;
+}));
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -60,6 +65,93 @@ $leerEventos = $Eventos->leerEventos();
         button:hover {
             background-color: #1b7f4d;
         }
+        /* Overlay para marcar donde colocar el QR */
+        #reader {
+            position: relative;
+            margin: 0 auto;
+            max-width: 500px;
+            height: 350px;
+            background: #000; /* mientras no hay cámara */
+            border-radius: 12px;
+            overflow: visible;
+        }
+
+        .qr-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 62%;
+            height: 48%;
+            transform: translate(-50%, -50%);
+            border-radius: 12px;
+            /* sombrear todo el fondo excepto el rectángulo central */
+            box-shadow: 0 0 0 2000px rgba(0,0,0,0.62);
+            pointer-events: none;
+            overflow: visible;
+        }
+
+        /* Marcas blancas sólo en las esquinas del rectángulo */
+        .qr-overlay .corner {
+            position: absolute;
+            width: 44px;
+            height: 44px;
+            box-sizing: border-box;
+        }
+
+        .qr-overlay .top-left {
+            top: -2px;
+            left: -2px;
+            border-top: 4px solid #fff;
+            border-left: 4px solid #fff;
+            border-top-left-radius: 6px;
+        }
+
+        .qr-overlay .top-right {
+            top: -2px;
+            right: -2px;
+            border-top: 4px solid #fff;
+            border-right: 4px solid #fff;
+            border-top-right-radius: 6px;
+        }
+
+        .qr-overlay .bottom-left {
+            bottom: -2px;
+            left: -2px;
+            border-bottom: 4px solid #fff;
+            border-left: 4px solid #fff;
+            border-bottom-left-radius: 6px;
+        }
+
+        .qr-overlay .bottom-right {
+            bottom: -2px;
+            right: -2px;
+            border-bottom: 4px solid #fff;
+            border-right: 4px solid #fff;
+            border-bottom-right-radius: 6px;
+        }
+
+        .qr-overlay .center-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 8px rgba(255,255,255,0.08);
+        }
+
+        #result {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #007BFF;
+            min-height: 24px;
+        }
+
+        .msg-success { color: #1b7f4d; }
+        .msg-error { color: #c62828; }
+        .msg-warn { color: #b58b00; }
     </style>
 </head>
 <body>
@@ -83,8 +175,18 @@ $leerEventos = $Eventos->leerEventos();
         <option value="0">Selecciona una sección (opcional)</option>
     </select>
 
+    
+
     <div class="QR">
-        <div id="reader"></div>
+        <div id="reader">
+            <div class="qr-overlay" aria-hidden="true">
+                <div class="corner top-left"></div>
+                <div class="corner top-right"></div>
+                <div class="corner bottom-left"></div>
+                <div class="corner bottom-right"></div>
+                <div class="center-dot"></div>
+            </div>
+        </div>
         <p id="result">Esperando lectura de QR...</p>
 
         <p>O escribe el ID del usuario manualmente:</p>
@@ -147,13 +249,33 @@ $leerEventos = $Eventos->leerEventos();
         .catch(err => console.error('Error al cargar secciones:', err));
     }
 
-    // 🔹 Enviar asistencia
+    // 🔹 Enviar asistencia (muestra mensajes en pantalla en lugar de alert)
+    let lastScanned = null;
+    let scanCooldown = 2000; // ms
+    let lastScanTime = 0;
+
+    function showMessage(text, status='info'){
+        const el = document.getElementById('result');
+        el.textContent = text;
+        el.classList.remove('msg-success','msg-error','msg-warn');
+        if(status === 'success') el.classList.add('msg-success');
+        if(status === 'error') el.classList.add('msg-error');
+        if(status === 'warning') el.classList.add('msg-warn');
+    }
+
     function enviarAsistencia(idR) {
         const idE = selectEvento.value;
         const idS = selectSeccion.value !== "0" ? selectSeccion.value : null;
 
         if (idE === "0") {
-            alert("⚠️ Debes seleccionar un evento antes de marcar asistencia.");
+            showMessage("⚠️ Debes seleccionar un evento antes de marcar asistencia.", 'warning');
+            return;
+        }
+
+        // evitar reenvío inmediato del mismo id
+        const now = Date.now();
+        if (lastScanned === idR && (now - lastScanTime) < scanCooldown) {
+            // ignorar duplicado dentro del cooldown
             return;
         }
 
@@ -162,18 +284,33 @@ $leerEventos = $Eventos->leerEventos();
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ qr: idR, evento: idE, seccion: idS })
         })
-        .then(response => response.text())
-        .then(msg => {
-            alert(msg);
+        .then(response => response.json())
+        .then(data => {
+            if (!data || !data.status) {
+                showMessage('❌ Respuesta inesperada del servidor', 'error');
+                return;
+            }
+            if (data.status === 'success') {
+                showMessage(data.message || '✅ Asistencia registrada', 'success');
+            } else if (data.status === 'warning') {
+                showMessage(data.message || '⚠️ Atención', 'warning');
+            } else {
+                showMessage(data.message || '❌ Error', 'error');
+            }
+            lastScanned = idR;
+            lastScanTime = Date.now();
+            // pausar el escáner unos segundos para que el operario pueda leer el mensaje
+            pauseScanner(1500);
         })
         .catch(err => {
             console.error('Error al marcar asistencia:', err);
-            alert('❌ Ocurrió un error. Intenta de nuevo.');
+            showMessage('❌ Ocurrió un error. Intenta de nuevo.', 'error');
         });
     }
 
     // ✅ QR leído correctamente
     function onScanSuccess(decodedText) {
+        // mostrar lectura y procesar
         document.getElementById('result').innerText = "QR leído: " + decodedText;
         enviarAsistencia(decodedText);
     }
@@ -182,18 +319,58 @@ $leerEventos = $Eventos->leerEventos();
     function marcarAsistenciaManual() {
         const manualId = document.getElementById('manualId').value.trim();
         if (manualId === "" || isNaN(manualId)) {
-            alert("⚠️ Ingresa un ID válido.");
+            showMessage("⚠️ Ingresa un ID válido.", 'warning');
             return;
         }
         enviarAsistencia(manualId);
     }
 
     // 🔹 Inicializar escáner QR
-    new Html5Qrcode("reader").start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
-        onScanSuccess
-    );
+    let html5Qr = new Html5Qrcode("reader");
+    let scanningActive = false;
+
+    function startScanner() {
+        html5Qr.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: 250 },
+            onScanSuccess
+        ).then(() => {
+            scanningActive = true;
+        }).catch(err => {
+            console.error('No se pudo iniciar la cámara:', err);
+            showMessage('❌ No se pudo iniciar la cámara. Comprueba permisos y cámara.', 'error');
+            scanningActive = false;
+        });
+    }
+
+    function pauseScanner(ms) {
+        if (!html5Qr || !scanningActive) return Promise.resolve();
+        scanningActive = false;
+        return html5Qr.stop().then(() => {
+            // esperar ms milisegundos y reanudar
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    // reanudar
+                    html5Qr.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess)
+                    .then(() => {
+                        scanningActive = true;
+                        resolve();
+                    })
+                    .catch(err => {
+                        console.error('Error reiniciando cámara:', err);
+                        showMessage('❌ No se pudo reanudar la cámara. Comprueba permisos y cámara.', 'error');
+                        resolve();
+                    });
+                }, ms);
+            });
+        }).catch(err => {
+            console.error('Error al detener la cámara:', err);
+            return Promise.resolve();
+        });
+    }
+
+    // iniciar al cargar
+    startScanner();
 
     // 🔹 Cargar secciones del evento guardado
     if (savedEvent) cargarSecciones(savedEvent);

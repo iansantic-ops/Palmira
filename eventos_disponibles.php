@@ -15,6 +15,7 @@ $idUsuario = $_SESSION['USER']['id'];
 
 include_once("assets/sentenciasSQL/eventos.php");
 include_once("assets/sentenciasSQL/secciones.php");
+include_once("assets/php/helpers.php");
 
 $leer_eventos = new Eventos();
 $seccionesModel = new Secciones();
@@ -28,13 +29,25 @@ if (!is_array($eventos)) {
 }
 
 /* =====================
-   AGRUPAR EVENTOS POR FECHA
+   AGRUPAR EVENTOS POR FECHA Y SEPARAR PASADOS/PRÓXIMOS
+   - Eventos con fecha < hoy se consideran "pasados"
+   - Agrupamos por fecha y ordenamos: próximos ascendente, pasados descendente
 ===================== */
-$eventosPorFecha = [];
+$hoy = date('Y-m-d');
+$eventosPorFecha = []; // próximos
+$eventosPasadosPorFecha = []; // pasados
 foreach ($eventos as $evento) {
     $fecha = $evento['fecha'];
-    $eventosPorFecha[$fecha][] = $evento;
+    if ($fecha < $hoy) {
+        $eventosPasadosPorFecha[$fecha][] = $evento;
+    } else {
+        $eventosPorFecha[$fecha][] = $evento;
+    }
 }
+
+// Asegurar orden: próximos (fecha asc), pasados (fecha desc)
+if (!empty($eventosPorFecha)) ksort($eventosPorFecha);
+if (!empty($eventosPasadosPorFecha)) krsort($eventosPasadosPorFecha);
 
 /* =====================
    INSCRIPCIÓN
@@ -50,8 +63,20 @@ if (isset($_POST['inscribir'])) {
 
     if ($idE && $idR) {
         if (!empty($idSecciones)) {
+            // Si se seleccionan varias secciones, procesarlas una por una.
+            // Si alguna devuelve un error/duplicado, detenerse y mostrar ese mensaje.
+            $inscribir = false;
             foreach ($idSecciones as $idS) {
-                $inscribir = $leer_eventos->inscribirUsuario($idE, $idR, $idS);
+                $res = $leer_eventos->inscribirUsuario($idE, $idR, $idS);
+                // Normalizar verdadero
+                if ($res === true || $res === 'true') {
+                    $inscribir = 'true';
+                    // continuar a la siguiente sección
+                    continue;
+                }
+                // Si no es 'true', tomar el primer error/duplicado y detener
+                $inscribir = $res;
+                break;
             }
         } else {
             $inscribir = $leer_eventos->inscribirUsuario($idE, $idR, null);
@@ -59,8 +84,12 @@ if (isset($_POST['inscribir'])) {
 
         if ($inscribir === 'true') {
             $mensaje = "✅ Inscripción realizada correctamente.";
-        } elseif ($inscribir === 'duplicado') {
+        } elseif ($inscribir === 'duplicado_evento') {
             $mensaje = "⚠️ Ya estás inscrito en este evento.";
+        } elseif ($inscribir === 'duplicado_modulo') {
+            $mensaje = "⚠️ Ya estás inscrito en este módulo (sub-evento).";
+        } elseif ($inscribir === 'conflicto_horario') {
+            $mensaje = "⚠️ Conflicto de horario: ya estás inscrito en otro módulo que ocurre a la misma fecha y hora.";
         } else {
             $mensaje = "❌ Error al inscribirse. Por favor, intenta de nuevo.";
         }
@@ -283,54 +312,81 @@ if (isset($_POST['inscribir'])) {
     <div class="mensaje"><?= htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8'); ?></div>
 <?php endif; ?>
 
-<?php foreach ($eventosPorFecha as $fecha => $eventosDelDia): ?>
-    <h3 class="titulo-fecha"><?= date('d/m/Y', strtotime($fecha)); ?></h3>
-    <div class="eventos-grid">
-        <?php foreach ($eventosDelDia as $evento): ?>
-            <div class="evento-card">
-                <h3><?= htmlspecialchars($evento['nombre']); ?></h3>
-                <p><?= htmlspecialchars($evento['descripcion']); ?></p>
-                <p><strong>Hora:</strong> <?= htmlspecialchars($evento['hora']); ?></p>
-                <p><strong>Lugar:</strong> <?= htmlspecialchars($evento['lugar']); ?></p>
+<?php if (!empty($eventosPorFecha)): ?>
+    <h2 style="text-align:center; margin-top:20px;">Próximos eventos</h2>
+    <?php foreach ($eventosPorFecha as $fecha => $eventosDelDia): ?>
+        <h3 class="titulo-fecha"><?= date('d/m/Y', strtotime($fecha)); ?></h3>
+        <div class="eventos-grid">
+            <?php foreach ($eventosDelDia as $evento): ?>
+                <div class="evento-card">
+                    <h3><?= safe_out($evento['nombre']); ?></h3>
+                    <p><?= nl2br(safe_out($evento['descripcion'])); ?></p>
+                    <p><strong>Hora:</strong> <?= safe_out($evento['hora']); ?></p>
+                    <p><strong>Lugar:</strong> <?= safe_out($evento['lugar']); ?></p>
 
-                <button class="btn-inscribir" type="button" data-evento="<?= $evento['idE']; ?>">Inscribirme</button>
+                    <button class="btn-inscribir" type="button" data-evento="<?= $evento['idE']; ?>">Inscribirme</button>
 
-                <form method="POST" class="form-secciones">
-                    <input type="hidden" name="idE" value="<?= (int)$evento['idE']; ?>">
-                    <!-- 🔹 SOLO CAMBIO: ya no se manda idUsuario por POST -->
+                    <form method="POST" class="form-secciones">
+                        <input type="hidden" name="idE" value="<?= (int)$evento['idE']; ?>">
+                        <!-- 🔹 SOLO CAMBIO: ya no se manda idUsuario por POST -->
 
-                    <?php
-                    $secciones = $seccionesModel->obtenerSeccionesPorEvento($evento['idE']);
-                    if (!empty($secciones)):
-                        foreach ($secciones as $sec): ?>
-                            <label>
-                                <input type="checkbox" name="idSeccion[]" value="<?= $sec['idSeccion']; ?>">
-                                <?= htmlspecialchars($sec['nombre_seccion']); ?> - <?= htmlspecialchars($sec['hora_inicio']); ?>
-                            </label>
-                        <?php endforeach;
-                    else: ?>
-                        <p>Evento general (sin sub-secciones).</p>
-                    <?php endif; ?>
-
-                    <button type="submit" name="inscribir">Confirmar inscripción</button>
-                </form>
-
-                <?php if (!empty($evento['mapa'])): ?>
-                    <button class="btn-inscribir ver-mapa" type="button" data-id="<?= $evento['idE']; ?>">Ver mapa</button>
-                    <div id="mapa-<?= $evento['idE']; ?>" class="mapa-container">
                         <?php
-                        if (str_contains($evento['mapa'], '<iframe')) {
-                            echo $evento['mapa'];
-                        } else {
-                            echo '<iframe src="' . htmlspecialchars($evento['mapa']) . '" allowfullscreen loading="lazy"></iframe>';
-                        }
-                        ?>
-                    </div>
-                <?php endif; ?>
-            </div>
-        <?php endforeach; ?>
-    </div>
-<?php endforeach; ?>
+                        $secciones = $seccionesModel->obtenerSeccionesPorEvento($evento['idE']);
+                        if (!empty($secciones)):
+                            foreach ($secciones as $sec): ?>
+                                <label>
+                                    <input type="checkbox" name="idSeccion[]" value="<?= $sec['idSeccion']; ?>">
+                                    <?= htmlspecialchars($sec['nombre_seccion']); ?> - <?= htmlspecialchars($sec['hora_inicio']); ?>
+                                </label>
+                            <?php endforeach;
+                        else: ?>
+                            <p>Evento general (sin sub-secciones).</p>
+                        <?php endif; ?>
+
+                        <button type="submit" name="inscribir">Confirmar inscripción</button>
+                    </form>
+
+                    <?php if (!empty($evento['mapa'])): ?>
+                        <?php $mapHtml = sanitize_iframe_or_url($evento['mapa']); ?>
+                        <?php if ($mapHtml): ?>
+                            <button class="btn-inscribir ver-mapa" type="button" data-id="<?= $evento['idE']; ?>">Ver mapa</button>
+                            <div id="mapa-<?= $evento['idE']; ?>" class="mapa-container">
+                                <?= $mapHtml; ?>
+                            </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endforeach; ?>
+<?php else: ?>
+    <p style="text-align:center;">No hay eventos próximos disponibles.</p>
+<?php endif; ?>
+
+<?php if (!empty($eventosPasadosPorFecha)): ?>
+    <h2 style="text-align:center; margin-top:40px;">Eventos pasados</h2>
+    <?php foreach ($eventosPasadosPorFecha as $fecha => $eventosDelDia): ?>
+        <h3 class="titulo-fecha"><?= date('d/m/Y', strtotime($fecha)); ?></h3>
+        <div class="eventos-grid">
+            <?php foreach ($eventosDelDia as $evento): ?>
+                <div class="evento-card" style="opacity:0.9;">
+                    <h3><?= safe_out($evento['nombre']); ?></h3>
+                    <p><?= nl2br(safe_out($evento['descripcion'])); ?></p>
+                    <p><strong>Hora:</strong> <?= safe_out($evento['hora']); ?></p>
+                    <p><strong>Lugar:</strong> <?= safe_out($evento['lugar']); ?></p>
+                    <?php if (!empty($evento['mapa'])): ?>
+                        <?php $mapHtml = sanitize_iframe_or_url($evento['mapa']); ?>
+                        <?php if ($mapHtml): ?>
+                            <div class="mapa-container" style="display:block; margin-top:10px;">
+                                <?= $mapHtml; ?>
+                            </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endforeach; ?>
+<?php endif; ?>
 
 
 <script>

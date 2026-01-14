@@ -15,6 +15,7 @@ $idUsuario = $_SESSION['USER']['id'];
 require_once __DIR__ . "/assets/lib/phpqrcode/qrlib.php";
 require_once __DIR__ . "/assets/sentenciasSQL/usuarios.php"; 
 require_once __DIR__ . "/assets/sentenciasSQL/eventos.php";  
+require_once __DIR__ . "/assets/php/helpers.php";
 
 $usuariosObj = new Usuarios();
 $usuario = $usuariosObj->buscarUsuarioPorId($idUsuario); 
@@ -44,6 +45,64 @@ error_reporting($old_error_reporting);
 $eventosObj = new Eventos();
 $eventosInscritos = $eventosObj->leerEventosUsuario($idUsuario);
 
+// Ordenar y agrupar por fecha y hora: primero ordenamos el array por fecha y hora (hora_inicio si existe, si no hora)
+if (!empty($eventosInscritos) && is_array($eventosInscritos)) {
+    usort($eventosInscritos, function($a, $b) {
+        $dateA = strtotime($a['fecha']);
+        $dateB = strtotime($b['fecha']);
+        if ($dateA < $dateB) return -1;
+        if ($dateA > $dateB) return 1;
+
+        // misma fecha -> comparar hora
+        $timeA = '';
+        $timeB = '';
+        if (!empty($a['hora_inicio'])) {
+            $timeA = $a['hora_inicio'];
+        } elseif (!empty($a['hora'])) {
+            $timeA = $a['hora'];
+        }
+        if (!empty($b['hora_inicio'])) {
+            $timeB = $b['hora_inicio'];
+        } elseif (!empty($b['hora'])) {
+            $timeB = $b['hora'];
+        }
+
+        // Normalizar formato de hora (si está vacío tratar como 00:00)
+        if (empty($timeA)) $timeA = '00:00';
+        if (empty($timeB)) $timeB = '00:00';
+
+        $tA = strtotime($a['fecha'] . ' ' . $timeA);
+        $tB = strtotime($b['fecha'] . ' ' . $timeB);
+        if ($tA < $tB) return -1;
+        if ($tA > $tB) return 1;
+        return 0;
+    });
+
+    // Agrupar por fecha (YYYY-MM-DD)
+    $eventosPorFecha = [];
+    foreach ($eventosInscritos as $e) {
+        $key = $e['fecha'];
+        if (!isset($eventosPorFecha[$key])) $eventosPorFecha[$key] = [];
+        $eventosPorFecha[$key][] = $e;
+    }
+
+    // Separar próximos y pasados
+    $hoy = date('Y-m-d');
+    $eventosProximosPorFecha = [];
+    $eventosPasadosPorFecha = [];
+    foreach ($eventosPorFecha as $fechaKey => $lista) {
+        if ($fechaKey < $hoy) {
+            $eventosPasadosPorFecha[$fechaKey] = $lista;
+        } else {
+            $eventosProximosPorFecha[$fechaKey] = $lista;
+        }
+    }
+    if (!empty($eventosProximosPorFecha)) ksort($eventosProximosPorFecha);
+    if (!empty($eventosPasadosPorFecha)) krsort($eventosPasadosPorFecha);
+} else {
+    $eventosPorFecha = [];
+}
+
 /* =====================
    ELIMINAR EVENTO
 ===================== */
@@ -55,9 +114,53 @@ if (isset($_POST['eliminar']) && isset($_POST['idE'])) {
 
     echo("<script>console.log('PHP: Eliminar evento ID: $idE para usuario ID: $idR');</script>");
     
-    $eliminado = $usuariosObj->eliminarEvento($idR, $idE);
+    // Si se envió idSeccion, eliminar solo esa inscripción; si no, eliminar todas las inscripciones al evento
+    $idSeccion = isset($_POST['idSeccion']) && $_POST['idSeccion'] !== '' ? intval($_POST['idSeccion']) : null;
+    $eliminado = $usuariosObj->eliminarEvento($idR, $idE, $idSeccion);
     if ($eliminado) {
         $eventosInscritos = $eventosObj->leerEventosUsuario($idUsuario);
+
+        // Volver a ordenar y reagrupar después de la eliminación
+            if (!empty($eventosInscritos) && is_array($eventosInscritos)) {
+            usort($eventosInscritos, function($a, $b) {
+                $dateA = strtotime($a['fecha']);
+                $dateB = strtotime($b['fecha']);
+                if ($dateA < $dateB) return -1;
+                if ($dateA > $dateB) return 1;
+                $timeA = !empty($a['hora_inicio']) ? $a['hora_inicio'] : ($a['hora'] ?? '00:00');
+                $timeB = !empty($b['hora_inicio']) ? $b['hora_inicio'] : ($b['hora'] ?? '00:00');
+                if (empty($timeA)) $timeA = '00:00';
+                if (empty($timeB)) $timeB = '00:00';
+                $tA = strtotime($a['fecha'] . ' ' . $timeA);
+                $tB = strtotime($b['fecha'] . ' ' . $timeB);
+                if ($tA < $tB) return -1;
+                if ($tA > $tB) return 1;
+                return 0;
+            });
+
+            $eventosPorFecha = [];
+            foreach ($eventosInscritos as $e) {
+                $key = $e['fecha'];
+                if (!isset($eventosPorFecha[$key])) $eventosPorFecha[$key] = [];
+                $eventosPorFecha[$key][] = $e;
+            }
+
+            // Re-separar próximos y pasados tras la eliminación
+            $hoy = date('Y-m-d');
+            $eventosProximosPorFecha = [];
+            $eventosPasadosPorFecha = [];
+            foreach ($eventosPorFecha as $fechaKey => $lista) {
+                if ($fechaKey < $hoy) {
+                    $eventosPasadosPorFecha[$fechaKey] = $lista;
+                } else {
+                    $eventosProximosPorFecha[$fechaKey] = $lista;
+                }
+            }
+            if (!empty($eventosProximosPorFecha)) ksort($eventosProximosPorFecha);
+            if (!empty($eventosPasadosPorFecha)) krsort($eventosPasadosPorFecha);
+        } else {
+            $eventosPorFecha = [];
+        }
     }
 }
 ?>
@@ -97,7 +200,7 @@ if (isset($_POST['eliminar']) && isset($_POST['idE'])) {
 
 <header>
     <h1 style="text-align:center;">
-        Bienvenido, <?= htmlspecialchars($usuario['nombre'], ENT_QUOTES, 'UTF-8'); ?>
+    Bienvenido, <?= safe_out($usuario['nombre']); ?>
     </h1>
     <div class="botones-usuario">
         <a href="modificar_usuario.php">
@@ -117,7 +220,7 @@ if (isset($_POST['eliminar']) && isset($_POST['idE'])) {
     <p>Este es tu código QR para registrar tu asistencia a todos los eventos que asistas, ¡consérvalo!</p>
     <img id="qr" src="<?= $qrDataUri ?>" alt="Tu QR" width="200"><br><br>
 
-    <a href="<?= $qrDataUri ?>" download="QR_Usuario_<?= htmlspecialchars($usuario['nombre'], ENT_QUOTES, 'UTF-8'); ?>.png">
+    <a href="<?= $qrDataUri ?>" download="QR_Usuario_<?= safe_out($usuario['nombre']); ?>.png">
         <button type="button">Descargar QR</button>
     </a>
 </div>
@@ -126,49 +229,81 @@ if (isset($_POST['eliminar']) && isset($_POST['idE'])) {
 
 <h2>Eventos a los que te has registrado:</h2>
 
-<div class="EventosUS"> 
-<?php if (!empty($eventosInscritos)): ?>
-<table class="tabla-eventos">
-<thead>
-<tr>
-<th>Nombre</th>
-<th>Fecha</th>
-<th>Hora</th>
-<th>Lugar</th>
-<th>Sección</th>
-<th>Acción</th>
-</tr>
-</thead>
-<tbody>
-<?php foreach ($eventosInscritos as $evento): ?>
-<tr>
-<td><?= htmlspecialchars($evento['nombre']); ?></td>
-<td><?= htmlspecialchars($evento['fecha']); ?></td>
-<td>
-<?php if (!empty($evento['hora_inicio'])): ?>
-<?= htmlspecialchars($evento['hora_inicio']); ?> -
-<?php else: ?>
-<?= htmlspecialchars($evento['hora']); ?>
-<?php endif; ?>
-</td>
-<td><?= htmlspecialchars($evento['lugar']); ?></td>
-<td><?= htmlspecialchars($evento['seccion'] ?: 'General'); ?></td>
-<td>
-<form action="perfil_usuario.php" method="post">
-<input type="hidden" name="idE" value="<?= $evento['idE']; ?>">
-<button type="submit" name="eliminar"
-onclick="return confirm('¿Estás seguro de que deseas eliminar la asistencia a este evento?');">
-Anular asistencia <img src="./assets/img/borrar-usuario.png" class="iconoT1">
-</button>
-</form>
-</td>
-</tr>
-<?php endforeach; ?>
-</tbody>
-</table>
-<?php else: ?>
-<p>No te has inscrito a ningún evento aún.</p>
-<?php endif; ?>
+<div class="EventosUS">
+    <?php if (!empty($eventosProximosPorFecha)): ?>
+        <h2 style="text-align:center;">Próximos eventos</h2>
+        <?php foreach ($eventosProximosPorFecha as $fecha => $eventosDia): ?>
+            <h3 class="titulo-fecha" style="margin-top:18px;"><?= date('d/m/Y', strtotime($fecha)); ?></h3>
+            <table class="tabla-eventos">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Hora</th>
+                        <th>Lugar</th>
+                        <th>Sección</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($eventosDia as $evento): ?>
+                    <tr>
+                        <td><?= safe_out($evento['nombre']); ?></td>
+                        <td>
+                            <?php if (!empty($evento['hora_inicio'])): ?>
+                                <?= safe_out($evento['hora_inicio']); ?> -
+                            <?php else: ?>
+                                <?= safe_out($evento['hora']); ?>
+                            <?php endif; ?>
+                        </td>
+                        <td><?= safe_out($evento['lugar']); ?></td>
+                        <td><?= safe_out($evento['seccion'] ?: 'General'); ?></td>
+                        <td>
+                            <form action="perfil_usuario.php" method="post">
+                                <input type="hidden" name="idE" value="<?= $evento['idE']; ?>">
+                                <?php if (!empty($evento['idSeccion'])): ?>
+                                    <input type="hidden" name="idSeccion" value="<?= $evento['idSeccion']; ?>">
+                                <?php endif; ?>
+                                <button type="submit" name="eliminar"
+                                    onclick="return confirm('¿Estás seguro de que deseas eliminar la asistencia a este evento?');">
+                                    Anular asistencia <img src="./assets/img/borrar-usuario.png" class="iconoT1">
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p style="text-align:center;">No tienes próximos eventos.</p>
+    <?php endif; ?>
+
+    <?php if (!empty($eventosPasadosPorFecha)): ?>
+        <h2 style="text-align:center; margin-top:30px;">Eventos pasados</h2>
+        <?php foreach ($eventosPasadosPorFecha as $fecha => $eventosDia): ?>
+            <h3 class="titulo-fecha" style="margin-top:18px;"><?= date('d/m/Y', strtotime($fecha)); ?></h3>
+            <table class="tabla-eventos">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Hora</th>
+                        <th>Lugar</th>
+                        <th>Sección</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($eventosDia as $evento): ?>
+                    <tr>
+                        <td><?= safe_out($evento['nombre']); ?></td>
+                        <td><?= !empty($evento['hora_inicio']) ? safe_out($evento['hora_inicio']) : safe_out($evento['hora']); ?></td>
+                        <td><?= safe_out($evento['lugar']); ?></td>
+                        <td><?= safe_out($evento['seccion'] ?: 'General'); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endforeach; ?>
+    <?php endif; ?>
 </div>
 
 <script>

@@ -14,11 +14,12 @@ $mensaje = "";
 
 if (isset($_POST['crear'])) {
     $idEvento      = random_int(10000000, 99999999);
-    $nombre_evento = htmlspecialchars(trim($_POST['nombre_evento']), ENT_QUOTES, 'UTF-8');
-    $descripcion   = htmlspecialchars(trim($_POST['descripcion']), ENT_QUOTES, 'UTF-8');
+    // Guardar texto crudo en la base de datos (UTF-8). Escaparemos al mostrar.
+    $nombre_evento = trim($_POST['nombre_evento']);
+    $descripcion   = trim($_POST['descripcion']);
     $fecha         = $_POST['fecha'];
     $hora          = $_POST['hora'];
-    $lugar         = htmlspecialchars(trim($_POST['lugar']), ENT_QUOTES, 'UTF-8');
+    $lugar         = trim($_POST['lugar']);
     $aforo_max     = intval($_POST['aforo_max']);
     $mapa          = !empty($_POST['mapa']) ? trim($_POST['mapa']) : null;
 
@@ -32,7 +33,8 @@ if (isset($_POST['crear'])) {
         // Insertar sub-eventos si existen
         if (!empty($_POST['seccion_nombre'])) {
             foreach ($_POST['seccion_nombre'] as $i => $nombreSeccion) {
-                $nombreSeccion = htmlspecialchars(trim($nombreSeccion), ENT_QUOTES, 'UTF-8');
+                // Guardar el nombre crudo; se escapará al mostrarlo
+                $nombreSeccion = trim($nombreSeccion);
                 $horaInicio = $_POST['hora_inicio'][$i];
                 $crear_secciones->crear_seccion($idEvento, $nombreSeccion, $horaInicio);
             }

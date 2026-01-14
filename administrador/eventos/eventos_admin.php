@@ -20,8 +20,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminarEvento'])) {
     }
 }
 
+// ✅ Eliminar todos los eventos pasados (handler)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminarPasados'])) {
+    $res = $eventos->eliminarEventosPasados();
+    if ($res === true) {
+        echo "<script>alert('Eventos pasados eliminados correctamente'); window.location='eventos_admin.php';</script>";
+    } elseif ($res === 0) {
+        echo "<script>alert('No hay eventos pasados para eliminar');</script>";
+    } else {
+        echo "<script>alert('Error al eliminar eventos pasados');</script>";
+    }
+}
+
 // ✅ Leer todos los eventos
 $listaEventos = $eventos->leerEventos();
+
+// Separar próximos y pasados agrupados por fecha
+$proximos = [];
+$pasados = [];
+$hoy = date('Y-m-d');
+foreach ($listaEventos as $ev) {
+    $fecha = $ev['fecha'];
+    if ($fecha < $hoy) {
+        $pasados[$fecha][] = $ev;
+    } else {
+        $proximos[$fecha][] = $ev;
+    }
+}
+if (!empty($proximos)) ksort($proximos);
+if (!empty($pasados)) krsort($pasados);
 ?>
 
 <!DOCTYPE html>
@@ -74,39 +101,86 @@ header a button:hover { background-color: var(--verde-oscuro); transform:scale(1
     </div>
 </header>
 
-<div class="container">
-<?php if (!empty($listaEventos)): ?>
-    <?php foreach ($listaEventos as $evento): ?>
-        <div class="card">
-            <div class="headerCardEventos">
-                <a href="editar_evento.php?idE=<?= $evento['idE']; ?>">
-                    <button><img src="../../assets/img/lapiz.png" class="icono-AM" alt="Editar"></button>
-                </a>
-                <form method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar este evento?');">
-                    <input type="hidden" name="idE" value="<?= $evento['idE']; ?>">
-                    <button type="submit" name="eliminarEvento">
-                        <img src="../../assets/img/basura.png" class="icono-AM" alt="Eliminar">
-                    </button>
-                </form>
+<!-- PRÓXIMOS EVENTOS -->
+<?php if (!empty($proximos)): ?>
+    <h2 style="text-align:center; margin-top:20px;">Próximos eventos</h2>
+    <div class="container">
+    <?php foreach ($proximos as $fecha => $eventosDia): ?>
+        <?php foreach ($eventosDia as $evento): ?>
+            <div class="card">
+                <div class="headerCardEventos">
+                    <a href="editar_evento.php?idE=<?= $evento['idE']; ?>">
+                        <button><img src="../../assets/img/lapiz.png" class="icono-AM" alt="Editar"></button>
+                    </a>
+                    <form method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar este evento?');">
+                        <input type="hidden" name="idE" value="<?= $evento['idE']; ?>">
+                        <button type="submit" name="eliminarEvento">
+                            <img src="../../assets/img/basura.png" class="icono-AM" alt="Eliminar">
+                        </button>
+                    </form>
+                </div>
+
+                <h2><?= htmlspecialchars($evento['nombre']); ?></h2>
+                <p><strong><img src="../../assets/img/calendario.png" class="icono-AMT" alt="Fecha"> Fecha:</strong> <?= htmlspecialchars($evento['fecha']); ?></p>
+                <p><strong><img src="../../assets/img/reloj.png" class="icono-AMT" alt="Hora"> Hora:</strong> <?= htmlspecialchars($evento['hora']); ?></p>
+                <p><strong><img src="../../assets/img/marcador.png" class="icono-AMT" alt="Lugar"> Lugar:</strong> <?= htmlspecialchars($evento['lugar']); ?></p>
+
+                <!-- Botón mostrar mapa -->
+                <?php if (!empty($evento['mapa'])): ?>
+                    <button class="btn" onclick="abrirMapa('<?= htmlspecialchars($evento['mapa'], ENT_QUOTES); ?>')">Ver Mapa</button>
+                <?php endif; ?>
+
+                <a class="btn" href="inscritos.php?idE=<?= $evento['idE']; ?>">Ver información</a>
             </div>
-
-            <h2><?= htmlspecialchars($evento['nombre']); ?></h2>
-            <p><strong><img src="../../assets/img/calendario.png" class="icono-AMT" alt="Fecha"> Fecha:</strong> <?= htmlspecialchars($evento['fecha']); ?></p>
-            <p><strong><img src="../../assets/img/reloj.png" class="icono-AMT" alt="Hora"> Hora:</strong> <?= htmlspecialchars($evento['hora']); ?></p>
-            <p><strong><img src="../../assets/img/marcador.png" class="icono-AMT" alt="Lugar"> Lugar:</strong> <?= htmlspecialchars($evento['lugar']); ?></p>
-
-            <!-- Botón mostrar mapa -->
-            <?php if (!empty($evento['mapa'])): ?>
-                <button class="btn" onclick="abrirMapa('<?= htmlspecialchars($evento['mapa'], ENT_QUOTES); ?>')">Ver Mapa</button>
-            <?php endif; ?>
-
-            <a class="btn" href="inscritos.php?idE=<?= $evento['idE']; ?>">Ver información</a>
-        </div>
+        <?php endforeach; ?>
     <?php endforeach; ?>
+    </div>
 <?php else: ?>
-    <p>No hay eventos registrados.</p>
+    <p style="text-align:center; margin-top:20px;">No hay próximos eventos.</p>
 <?php endif; ?>
-</div>
+
+<!-- EVENTOS PASADOS -->
+<?php if (!empty($pasados)): ?>
+    <h2 style="text-align:center; margin-top:30px;">Eventos pasados</h2>
+    <div style="text-align:center; margin-bottom:10px;">
+        <form method="POST" onsubmit="return confirm('¿Deseas eliminar todos los eventos pasados? Esta acción no se puede deshacer.');">
+            <button type="submit" name="eliminarPasados" class="btn">Eliminar todos los eventos pasados</button>
+        </form>
+    </div>
+    <div class="container">
+    <?php foreach ($pasados as $fecha => $eventosDia): ?>
+        <?php foreach ($eventosDia as $evento): ?>
+            <div class="card">
+                <div class="headerCardEventos">
+                    <a href="editar_evento.php?idE=<?= $evento['idE']; ?>">
+                        <button><img src="../../assets/img/lapiz.png" class="icono-AM" alt="Editar"></button>
+                    </a>
+                    <form method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar este evento?');">
+                        <input type="hidden" name="idE" value="<?= $evento['idE']; ?>">
+                        <button type="submit" name="eliminarEvento">
+                            <img src="../../assets/img/basura.png" class="icono-AM" alt="Eliminar">
+                        </button>
+                    </form>
+                </div>
+
+                <h2><?= htmlspecialchars($evento['nombre']); ?></h2>
+                <p><strong><img src="../../assets/img/calendario.png" class="icono-AMT" alt="Fecha"> Fecha:</strong> <?= htmlspecialchars($evento['fecha']); ?></p>
+                <p><strong><img src="../../assets/img/reloj.png" class="icono-AMT" alt="Hora"> Hora:</strong> <?= htmlspecialchars($evento['hora']); ?></p>
+                <p><strong><img src="../../assets/img/marcador.png" class="icono-AMT" alt="Lugar"> Lugar:</strong> <?= htmlspecialchars($evento['lugar']); ?></p>
+
+                <!-- Botón mostrar mapa -->
+                <?php if (!empty($evento['mapa'])): ?>
+                    <button class="btn" onclick="abrirMapa('<?= htmlspecialchars($evento['mapa'], ENT_QUOTES); ?>')">Ver Mapa</button>
+                <?php endif; ?>
+
+                <a class="btn" href="inscritos.php?idE=<?= $evento['idE']; ?>">Ver información</a>
+            </div>
+        <?php endforeach; ?>
+    <?php endforeach; ?>
+    </div>
+<?php else: ?>
+    <p style="text-align:center; margin-top:30px;">No hay eventos pasados.</p>
+<?php endif; ?>
 
 <!-- Modal del Mapa -->
 <div id="modalMapa">

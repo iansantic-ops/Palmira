@@ -50,6 +50,24 @@ if (isset($_POST['subir']) && isset($_FILES["imagen"])) {
         echo "<p style='color:red; text-align:center;'> Error: " . $e->getMessage() . "</p>";
     }
 }
+
+// Manejar eliminación de un anuncio del historial (ocultar de la vista de usuarios)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminar_historial'])) {
+    $rutaEliminar = $_POST['ruta'] ?? '';
+    if (!empty($rutaEliminar)) {
+        try {
+            $sqlDel = "DELETE FROM anuncios_historial WHERE ruta_imagen = :ruta LIMIT 1";
+            $stmtDel = $pdo->prepare($sqlDel);
+            if ($stmtDel->execute([':ruta' => $rutaEliminar])) {
+                echo "<p style='color:lightgreen; text-align:center;'>✅ Anuncio eliminado del historial correctamente.</p>";
+            } else {
+                echo "<p style='color:red; text-align:center;'>❌ No se pudo eliminar el anuncio del historial.</p>";
+            }
+        } catch (Exception $e) {
+            echo "<p style='color:red; text-align:center;'> Error: " . $e->getMessage() . "</p>";
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -79,6 +97,34 @@ if (isset($_POST['subir']) && isset($_FILES["imagen"])) {
             <input type="file" name="imagen" accept="image/*" required>
             <button type="submit" name="subir">Actualizar Anuncio</button>
         </form>
+
+        <hr>
+        <h3>Historial de anuncios</h3>
+        <div class="historial-admin" style="display:flex;flex-wrap:wrap;gap:12px;">
+            <?php
+            try {
+                $stmtH = $pdo->query("SELECT ruta_imagen, fecha FROM anuncios_historial ORDER BY fecha DESC");
+                $lista = $stmtH->fetchAll(PDO::FETCH_ASSOC);
+            } catch (Exception $e) {
+                $lista = [];
+            }
+            if (!empty($lista)) {
+                foreach ($lista as $item) {
+                    $ruta = $item['ruta_imagen'];
+                    $fecha = $item['fecha'];
+                    echo "<div style='width:180px;border:1px solid #ddd;padding:8px;border-radius:8px;text-align:center;'>";
+                    echo "<img src='../".htmlspecialchars($ruta, ENT_QUOTES, 'UTF-8')."' style='max-width:160px;border-radius:6px;'><br>";
+                    echo "<small>".htmlspecialchars($fecha, ENT_QUOTES, 'UTF-8')."</small><br>";
+                    echo "<form method='POST' onsubmit='return confirm(\'¿Eliminar este anuncio de la vista de usuarios?\');' style='margin-top:6px;'>";
+                    echo "<input type='hidden' name='ruta' value='".htmlspecialchars($ruta, ENT_QUOTES, 'UTF-8')."'>";
+                    echo "<button type='submit' name='eliminar_historial' style='background:#c62828;color:#fff;border:none;padding:6px 8px;border-radius:6px;cursor:pointer;'>Eliminar</button>";
+                    echo "</form></div>";
+                }
+            } else {
+                echo "<p>No hay historial de anuncios.</p>";
+            }
+            ?>
+        </div>
     </main>
 </body>
 </html>
